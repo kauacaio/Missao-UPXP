@@ -1,3 +1,5 @@
 # Os roteiros do banco contêm códigos e respostas do evento.
 *.sql
 
+# Original em alta resolução; o site usa a versão JPG otimizada.
+assets/hero-negocios-v2.png
