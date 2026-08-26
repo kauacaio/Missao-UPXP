@@ -7,7 +7,7 @@ function getSavedPlayer() {
   catch { localStorage.removeItem("upxp_player"); return null; }
 }
 
-const state = { player: getSavedPlayer(), challenge: null, previous: "welcomeScreen", channel: null };
+const state = { player: getSavedPlayer(), challenge: null, selectedAnswer: null, previous: "welcomeScreen", channel: null };
 const TOTAL_CHALLENGES = 12;
 const screens = [...document.querySelectorAll(".screen")];
 const $ = (id) => document.getElementById(id);
@@ -59,25 +59,34 @@ function updatePlayer() {
 async function validateCode(event) {
   event.preventDefault(); if (!ensureConfigured() || !state.player) return;
   const code = $("codeInput").value.trim().toUpperCase(); const button = event.submitter;
-  button.disabled = true; button.textContent = "BUSCANDO..."; $("codeMessage").textContent = "";
+  button.disabled = true; button.textContent = "BUSCANDO..."; $("codeMessage").textContent = ""; $("codeMessage").className = "message";
   const { data, error } = await db.rpc("get_challenge_by_code", { entered_code: code, player_uuid: state.player.id });
   button.disabled = false; button.textContent = "VALIDAR";
-  if (error || !data?.length) { $("codeMessage").textContent = "Código não encontrado. Confira e tente novamente."; return; }
+  if (error || !data?.length) { $("codeMessage").textContent = "Código não encontrado. Confira os caracteres e tente novamente."; $("codeMessage").className = "message error"; return; }
   const challenge = data[0];
-  if (challenge.already_answered) { $("codeMessage").textContent = "Você já concluiu este desafio."; return; }
+  if (challenge.already_answered) { $("codeMessage").textContent = "Este desafio já foi concluído. Procure outro ponto da missão."; $("codeMessage").className = "message success"; return; }
   state.challenge = challenge; renderChallenge(); showScreen("challengeScreen");
 }
 
 function renderChallenge() {
-  const c = state.challenge; $("challengeLocation").textContent = c.location_name; $("challengePoints").textContent = `+${c.points} PONTOS`;
+  const c = state.challenge; state.selectedAnswer = null; $("challengeLocation").textContent = c.location_name; $("challengePoints").textContent = `+${c.points} PONTOS`;
   $("questionText").textContent = c.question; $("answerFeedback").className = "feedback hidden";
   $("answersList").innerHTML = c.options.map((option, index) => `<button class="answer" data-index="${index}"><b>${String.fromCharCode(65 + index)}</b><span>${escapeHtml(option)}</span></button>`).join("");
+  $("confirmAnswer").disabled = true; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>";
+}
+
+function selectAnswer(index) {
+  state.selectedAnswer = index;
+  document.querySelectorAll(".answer").forEach((button) => button.classList.toggle("selected", Number(button.dataset.index) === index));
+  $("confirmAnswer").disabled = false;
 }
 
 async function submitAnswer(index) {
+  if (index === null || index === undefined) return;
+  $("confirmAnswer").disabled = true; $("confirmAnswer").textContent = "ENVIANDO...";
   document.querySelectorAll(".answer").forEach((b) => (b.disabled = true));
   const { data, error } = await db.rpc("submit_answer", { player_uuid: state.player.id, challenge_uuid: state.challenge.challenge_id, selected_index: index });
-  if (error) { toast("Não foi possível registrar a resposta.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); return; }
+  if (error) { toast("Não foi possível registrar a resposta.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>"; return; }
   const result = data[0]; const feedback = $("answerFeedback");
   document.querySelector(`.answer[data-index="${index}"]`)?.classList.add(result.is_correct ? "correct" : "wrong");
   feedback.className = `feedback ${result.is_correct ? "success" : "failure"}`;
@@ -104,7 +113,7 @@ function subscribeRanking() {
 function escapeHtml(value = "") { const d = document.createElement("div"); d.textContent = value; return d.innerHTML; }
 
 document.addEventListener("click", (event) => {
-  const answer = event.target.closest(".answer"); if (answer) return submitAnswer(Number(answer.dataset.index));
+  const answer = event.target.closest(".answer"); if (answer) return selectAnswer(Number(answer.dataset.index));
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "start") showScreen(state.player ? "gameScreen" : "registerScreen");
   if (action === "home") showScreen("welcomeScreen");
@@ -116,6 +125,11 @@ document.addEventListener("click", (event) => {
 $("rankingShortcut").addEventListener("click", loadRanking);
 $("registerForm").addEventListener("submit", registerPlayer);
 $("codeForm").addEventListener("submit", validateCode);
+$("codeInput").addEventListener("input", (event) => {
+  event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  $("codeMessage").textContent = ""; $("codeMessage").className = "message";
+});
+$("confirmAnswer").addEventListener("click", () => submitAnswer(state.selectedAnswer));
 
 async function restoreSession() {
   if (!state.player) return;

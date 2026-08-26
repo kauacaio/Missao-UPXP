@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="brand.css" />
     <link rel="stylesheet" href="mobile.css" />
+    <link rel="stylesheet" href="ux.css" />
   </head>
   <body>
     <div class="noise"></div>
@@ -49,15 +50,15 @@
       <section id="registerScreen" class="screen form-screen">
         <button class="back-button" data-action="home">← Voltar</button>
         <div class="panel narrow-panel">
-          <div class="step-label">PASSO 01</div>
-          <h2>Identifique-se,<br /><em>explorador.</em></h2>
-          <p>Esses dados serão usados somente durante a experiência.</p>
+          <div class="form-intro"><div class="step-label">CADASTRO RÁPIDO</div><span>Leva menos de 1 minuto</span></div>
+          <h2>Como vamos<br /><em>te chamar?</em></h2>
+          <p>Seu apelido e sua escola aparecerão no ranking. Não use seu nome completo.</p>
           <form id="registerForm">
-            <label>Seu nome ou apelido<input id="playerName" name="name" maxlength="30" placeholder="Como aparecerá no ranking" required /></label>
-            <label>Sua escola<input id="playerSchool" name="school" maxlength="80" placeholder="Nome da escola" required /></label>
-            <label>Turma / série<input id="playerClass" name="className" maxlength="30" placeholder="Ex.: 3º ano A" required /></label>
+            <label>Apelido <small>Visível no ranking</small><input id="playerName" name="name" maxlength="30" autocomplete="nickname" placeholder="Ex.: Ana C." required /></label>
+            <label>Escola<input id="playerSchool" name="school" maxlength="80" autocomplete="organization" placeholder="Digite o nome da sua escola" required /></label>
+            <label>Turma ou série<input id="playerClass" name="className" maxlength="30" placeholder="Ex.: 3º ano A" required /></label>
             <label class="consent"><input type="checkbox" required /><span>Concordo com o uso dos dados para participação no evento.</span></label>
-            <button class="primary-button full" type="submit">ENTRAR NO JOGO <span>→</span></button>
+            <button class="primary-button full" type="submit">CRIAR MINHA PARTICIPAÇÃO <span>→</span></button>
           </form>
         </div>
       </section>
@@ -68,13 +69,14 @@
           <div class="score-pill"><span>SEUS PONTOS</span><strong id="playerScore">0</strong></div>
         </div>
         <div class="progress-wrap"><div><span>Progresso da missão</span><strong id="progressText">0 desafios</strong></div><div class="progress-track"><i id="progressBar"></i></div></div>
+        <div class="next-step"><span>PRÓXIMO PASSO</span><strong>Procure um ponto da missão no campus</strong><p>Quando encontrar, digite o código indicado no campo abaixo.</p></div>
         <div class="code-panel">
           <div class="radar"><span>⌖</span></div>
           <div>
             <div class="step-label">ENCONTROU UM CÓDIGO?</div>
             <h3>Desbloqueie o próximo desafio.</h3>
             <p>Digite o código encontrado no campus e coloque seu olhar de gestor e contador à prova.</p>
-            <form id="codeForm" class="code-form"><input id="codeInput" autocomplete="off" autocapitalize="characters" maxlength="24" placeholder="DIGITE O CÓDIGO" required /><button type="submit">VALIDAR</button></form>
+            <form id="codeForm" class="code-form"><label class="sr-only" for="codeInput">Código encontrado</label><input id="codeInput" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="EX.: ADM7K2" required /><button type="submit">DESBLOQUEAR</button></form>
             <div id="codeMessage" class="message" role="status"></div>
           </div>
         </div>
@@ -86,7 +88,9 @@
         <div class="panel question-panel">
           <div class="question-meta"><span id="challengeLocation">LOCAL</span><strong id="challengePoints">+100 PONTOS</strong></div>
           <h2 id="questionText">Pergunta</h2>
+          <p class="answer-help">Selecione uma alternativa e confirme sua resposta.</p>
           <div id="answersList" class="answers-list"></div>
+          <button id="confirmAnswer" class="primary-button confirm-answer" type="button" disabled>CONFIRMAR RESPOSTA <span>→</span></button>
           <div id="answerFeedback" class="feedback hidden"></div>
         </div>
       </section>
