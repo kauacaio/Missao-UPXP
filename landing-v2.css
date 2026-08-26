@@ -1,0 +1,63 @@
+/* Landing page de campanha — mobile first */
+.welcome-screen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
+}
+
+.welcome-screen .hero-copy { position:relative; z-index:3; }
+.welcome-screen .eyebrow { color:var(--lime); }
+.welcome-screen .eyebrow span { background:var(--lime); }
+.welcome-screen .hero-copy h1 { color:#fff; }
+.welcome-screen .hero-copy h1 em { color:#ff2438; -webkit-text-stroke:0; }
+.welcome-screen .hero-copy>p { color:#c9c4d0; }
+.welcome-screen .mission-flow span { color:#cbc5d3; }
+.welcome-screen .mission-flow b { color:var(--lime); }
+.welcome-screen .mission-flow i { background:#ffffff2b; }
+.welcome-screen .primary-button { background:#ed1c2e; box-shadow:7px 7px 0 var(--lime); }
+.welcome-screen .primary-button:hover { box-shadow:4px 4px 0 var(--lime); }
+.welcome-screen .text-button { color:#fff; }
+.hero-art>img { width:100%; height:100%; object-fit:cover; object-position:center; }
+.hero-stats { position:absolute; z-index:2; display:flex; align-items:center; gap:14px; padding:12px 15px; background:#ffffffed; color:var(--ink); box-shadow:6px 6px 0 var(--lime); }
+.hero-stats span { display:grid; font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.hero-stats strong { font:20px/1 "Archivo Black",sans-serif; letter-spacing:-.04em; }
+.hero-stats i { width:1px; height:30px; background:#d9d2df; }
+
+@media(min-width:761px) {
+  .welcome-screen.active { background:var(--ink); }
+  .welcome-screen .opening-label { display:flex; color:#bcb5c6; }
+  .hero-art { height:min(620px,75vh); border:1px solid #ffffff20; }
+  .hero-art:after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,var(--ink) 0%,transparent 35%); }
+  .hero-stats { right:20px; bottom:20px; }
+}
+
+@media(max-width:760px) {
+  .welcome-screen.active { display:block; min-height:calc(100dvh - 64px); padding-top:25px; background:var(--ink); }
+  .welcome-screen:before { display:none; }
+  .welcome-screen .opening-label { margin-bottom:25px; color:#aca5b5; }
+  .welcome-screen .opening-label span { background:#fff; color:var(--ink); }
+  .welcome-screen .opening-label i { color:#aca5b5; }
+  .welcome-screen .eyebrow { margin-bottom:13px; color:var(--lime); }
+  .welcome-screen .eyebrow span { background:var(--lime); }
+  .welcome-screen .hero-copy h1 { max-width:320px; font-size:clamp(42px,13vw,58px); }
+  .welcome-screen .hero-copy>p { max-width:300px; margin-top:16px; color:#c9c4d0; }
+  .welcome-screen .mission-flow { margin:20px 0 22px; }
+  .welcome-screen .mission-flow b { color:var(--lime); }
+  .welcome-screen .opening-actions { position:relative; z-index:4; }
+  .welcome-screen .primary-button { background:#ed1c2e; box-shadow:7px 7px 0 var(--lime); }
+  .welcome-screen .opening-actions .text-button { margin-top:11px; color:#fff; }
+  .welcome-screen .hero-art { display:block; position:relative; width:calc(100% + 36px); height:250px; min-height:0; margin:20px -18px -40px; overflow:hidden; }
+  .welcome-screen .hero-art:before { content:""; position:absolute; z-index:1; inset:0; background:linear-gradient(180deg,var(--ink) 0%,transparent 32%,transparent 80%,#08060d 100%); }
+  .welcome-screen .hero-art>img { object-position:center 55%; }
+  .welcome-screen .hero-stats { left:18px; bottom:25px; }
+}
+
+@media(max-width:360px) {
+  .welcome-screen .opening-label { margin-bottom:18px; }
+  .welcome-screen .hero-copy h1 { font-size:39px; }
+  .welcome-screen .hero-copy>p { font-size:13px; }
+  .welcome-screen .mission-flow { margin-block:16px 18px; }
+  .welcome-screen .hero-art { width:calc(100% + 28px); margin-inline:-14px; }
+}
