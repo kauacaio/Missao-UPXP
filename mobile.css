@@ -1,0 +1,89 @@
+/* Camada mobile-first para uso durante a imersão no campus */
+.course-tags { display:flex; flex-wrap:wrap; gap:8px; margin:-2px 0 20px; }
+.course-tags span { padding:7px 10px; background:#ed1c2e; color:#fff; font-size:9px; font-weight:800; letter-spacing:.1em; }
+.opening-label { display:none; }
+.mission-flow { display:flex; align-items:center; max-width:520px; margin:26px 0; }
+.mission-flow span { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:11px; font-weight:700; }
+.mission-flow b { color:var(--purple); font-size:9px; }
+.mission-flow i { width:28px; height:1px; margin:0 10px; background:var(--line); }
+.opening-actions { width:max-content; }
+button, input { touch-action:manipulation; }
+
+@media (max-width: 760px) {
+  html { -webkit-text-size-adjust:100%; }
+  body { overflow-x:hidden; }
+  .topbar { position:sticky; top:0; height:64px; background:rgba(246,243,238,.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); z-index:20; padding-top:env(safe-area-inset-top); }
+  .brand-divider { display:none; }
+  .brand > span:last-of-type { font-size:9px; max-width:70px; line-height:1.15; }
+  .icon-button { min-width:44px; min-height:44px; font-size:20px; }
+  main, .screen { min-height:calc(100dvh - 64px); }
+  .screen { padding:24px 18px calc(40px + env(safe-area-inset-bottom)); }
+  .welcome-screen.active { display:flex; flex-direction:column; justify-content:center; background:linear-gradient(155deg,#f9f7f2 0%,#f9f7f2 68%,#efe8f4 100%); }
+  .welcome-screen:before { content:""; position:absolute; width:190px; height:190px; right:-105px; top:100px; border:1px solid #ed1c2e33; border-radius:50%; box-shadow:0 0 0 35px #ed1c2e08,0 0 0 70px #ed1c2e06; pointer-events:none; }
+  .hero-copy { width:100%; position:relative; z-index:1; }
+  .opening-label { display:flex; align-items:center; justify-content:space-between; margin-bottom:42px; color:var(--muted); font-size:8px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+  .opening-label span { padding:7px 9px; background:var(--ink); color:#fff; }
+  .opening-label i { font-style:normal; }
+  .eyebrow { font-size:9px; margin-bottom:17px; color:#ed1c2e; }
+  .eyebrow span { background:#ed1c2e; }
+  .hero-copy h1 { max-width:340px; font-size:clamp(43px,13.5vw,61px); line-height:.91; letter-spacing:-.065em; overflow-wrap:normal; }
+  .hero-copy h1 em { color:#ed1c2e; -webkit-text-stroke:1px #ed1c2e; }
+  .hero-copy > p { max-width:330px; font-size:14px; line-height:1.6; margin:22px 0 0; }
+  .mission-flow { justify-content:space-between; margin:27px 0 30px; }
+  .mission-flow span { display:grid; gap:3px; font-size:10px; }
+  .mission-flow b { color:#ed1c2e; font-size:8px; }
+  .mission-flow i { flex:1; max-width:25px; margin:0 7px; }
+  .opening-actions { width:100%; }
+  .primary-button { width:calc(100% - 7px); min-width:0; min-height:56px; padding:16px; }
+  .welcome-screen .primary-button { background:var(--ink); box-shadow:7px 7px 0 #ed1c2e; }
+  .welcome-screen .primary-button:hover { box-shadow:4px 4px 0 #ed1c2e; }
+  .opening-actions .text-button { width:100%; min-height:48px; margin:16px 0 0; }
+  .hero-art { display:none; }
+  .hero-card { width:138px; height:178px; box-shadow:14px 16px 0 var(--ink); }
+  .hero-card strong { font-size:38px; }
+  .hero-card b { font-size:21px; }
+  .orbit { width:250px; height:140px; }
+  .back-button { min-height:44px; margin:0 0 15px; padding:0; }
+  .panel { width:100%; padding:25px 18px; }
+  .panel h2 { font-size:38px; }
+  .panel form { margin-top:22px; gap:15px; }
+  .panel input { min-height:52px; font-size:16px; border-radius:0; }
+  .consent { font-size:11px!important; }
+  .consent input { min-height:auto; width:20px; height:20px; flex:0 0 20px; }
+  .game-header { gap:12px; align-items:flex-end; }
+  .game-header h2 { max-width:190px; font-size:25px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .score-pill { flex:0 0 auto; padding:10px 14px; }
+  .score-pill strong { font-size:23px; }
+  .progress-wrap { margin:24px 0; }
+  .code-panel { display:block; min-height:0; padding:28px 18px; box-shadow:8px 8px 0 var(--lime); }
+  .radar { width:82px; height:82px; margin:8px auto 38px; box-shadow:0 0 0 13px #ffffff0c,0 0 0 26px #ffffff0c; }
+  .radar span { font-size:44px; }
+  .code-panel h3 { font-size:31px; line-height:1.02; }
+  .code-panel p { font-size:13px; line-height:1.5; }
+  .code-form { display:block; }
+  .code-form input { width:100%; min-height:56px; font-size:16px; text-align:center; }
+  .code-form button { width:100%; min-height:54px; margin-top:8px; }
+  .game-actions { display:grid; gap:9px; margin-top:28px; }
+  .secondary-button, .game-actions .text-button { width:100%; min-height:48px; }
+  .question-panel h2 { margin:25px 0; font-size:25px; }
+  .question-meta { gap:10px; }
+  .answer { min-height:62px; padding:11px; line-height:1.35; }
+  .answer b { flex:0 0 38px; }
+  .feedback { padding:18px 15px; }
+  .ranking-title h2 { font-size:43px; }
+  .ranking-title .live-dot { font-size:7px; }
+  .podium { margin:35px -8px 22px; }
+  .podium-card strong { font-size:12px; overflow:hidden; text-overflow:ellipsis; }
+  .podium-card small { font-size:9px; }
+  .ranking-row { font-size:12px; }
+  .ranking-row small { font-size:9px; }
+  .toast { width:calc(100% - 32px); bottom:calc(16px + env(safe-area-inset-bottom)); text-align:center; }
+}
+
+@media (max-width: 360px) {
+  .screen { padding-inline:14px; }
+  .hero-copy h1 { font-size:39px; }
+  .unipar-logo { width:92px; }
+  .brand > span:last-of-type { display:none; }
+  .podium-card { padding-inline:4px; }
+}

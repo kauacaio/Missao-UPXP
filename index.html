@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#25134f" />
+    <meta name="description" content="Missão UPXP 2026 — explore o campus, encontre códigos e conquiste o ranking." />
+    <title>Missão UPXP 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="brand.css" />
+    <link rel="stylesheet" href="mobile.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Missão UPXP 2026">
+        <img class="unipar-logo" src="assets/unipar-logo.jpg" alt="UNIPAR - Universidade Paranaense" />
+        <span class="brand-divider"></span>
+        <span>MISSÃO <strong>UPXP</strong></span>
+      </a>
+      <button id="rankingShortcut" class="icon-button hidden" aria-label="Abrir ranking">🏆</button>
+    </header>
+
+    <main>
+      <section id="welcomeScreen" class="screen welcome-screen active">
+        <div class="hero-copy">
+          <div class="opening-label"><span>UPXP 2026</span><i>Experiência universitária</i></div>
+          <div class="eyebrow"><span></span> ADM + CIÊNCIAS CONTÁBEIS</div>
+          <h1>O CAMPUS<br />É O SEU <em>JOGO.</em></h1>
+          <p>Descubra códigos, responda aos desafios e dispute o topo do ranking.</p>
+          <div class="mission-flow" aria-label="Como funciona">
+            <span><b>01</b> Explore</span><i></i><span><b>02</b> Responda</span><i></i><span><b>03</b> Pontue</span>
+          </div>
+          <div class="opening-actions">
+            <button class="primary-button" data-action="start">COMEÇAR AGORA <span>→</span></button>
+            <button class="text-button" data-action="show-ranking"><span>🏆</span> Ver ranking ao vivo</button>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="hero-card"><small>MISSÃO</small><strong>UPXP</strong><b>2026</b></div>
+          <span class="spark spark-a">✦</span><span class="spark spark-b">✦</span>
+        </div>
+      </section>
+
+      <section id="registerScreen" class="screen form-screen">
+        <button class="back-button" data-action="home">← Voltar</button>
+        <div class="panel narrow-panel">
+          <div class="step-label">PASSO 01</div>
+          <h2>Identifique-se,<br /><em>explorador.</em></h2>
+          <p>Esses dados serão usados somente durante a experiência.</p>
+          <form id="registerForm">
+            <label>Seu nome ou apelido<input id="playerName" name="name" maxlength="30" placeholder="Como aparecerá no ranking" required /></label>
+            <label>Sua escola<input id="playerSchool" name="school" maxlength="80" placeholder="Nome da escola" required /></label>
+            <label>Turma / série<input id="playerClass" name="className" maxlength="30" placeholder="Ex.: 3º ano A" required /></label>
+            <label class="consent"><input type="checkbox" required /><span>Concordo com o uso dos dados para participação no evento.</span></label>
+            <button class="primary-button full" type="submit">ENTRAR NO JOGO <span>→</span></button>
+          </form>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen game-screen">
+        <div class="game-header">
+          <div><span class="muted">EXPLORADOR(A)</span><h2 id="playerGreeting">Olá!</h2></div>
+          <div class="score-pill"><span>SEUS PONTOS</span><strong id="playerScore">0</strong></div>
+        </div>
+        <div class="progress-wrap"><div><span>Progresso da missão</span><strong id="progressText">0 desafios</strong></div><div class="progress-track"><i id="progressBar"></i></div></div>
+        <div class="code-panel">
+          <div class="radar"><span>⌖</span></div>
+          <div>
+            <div class="step-label">ENCONTROU UM CÓDIGO?</div>
+            <h3>Desbloqueie o próximo desafio.</h3>
+            <p>Digite o código encontrado no campus e coloque seu olhar de gestor e contador à prova.</p>
+            <form id="codeForm" class="code-form"><input id="codeInput" autocomplete="off" autocapitalize="characters" maxlength="24" placeholder="DIGITE O CÓDIGO" required /><button type="submit">VALIDAR</button></form>
+            <div id="codeMessage" class="message" role="status"></div>
+          </div>
+        </div>
+        <div class="game-actions"><button class="secondary-button" data-action="show-ranking">🏆 Ranking ao vivo</button><button class="text-button" data-action="logout">Sair da missão</button></div>
+      </section>
+
+      <section id="challengeScreen" class="screen challenge-screen">
+        <button class="back-button" data-action="game">← Voltar à missão</button>
+        <div class="panel question-panel">
+          <div class="question-meta"><span id="challengeLocation">LOCAL</span><strong id="challengePoints">+100 PONTOS</strong></div>
+          <h2 id="questionText">Pergunta</h2>
+          <div id="answersList" class="answers-list"></div>
+          <div id="answerFeedback" class="feedback hidden"></div>
+        </div>
+      </section>
+
+      <section id="rankingScreen" class="screen ranking-screen">
+        <button class="back-button" data-action="previous">← Voltar</button>
+        <div class="ranking-title"><div><div class="eyebrow"><span></span> AO VIVO</div><h2>RANKING DA<br /><em>MISSÃO</em></h2></div><div class="live-dot">ATUALIZANDO</div></div>
+        <div id="podium" class="podium"></div>
+        <div class="ranking-table"><div class="ranking-row ranking-head"><span>POS.</span><span>EXPLORADOR</span><span>PONTOS</span></div><div id="rankingList"></div></div>
+        <p id="rankingEmpty" class="empty hidden">O ranking aparecerá assim que a primeira missão for concluída.</p>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="alert"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
