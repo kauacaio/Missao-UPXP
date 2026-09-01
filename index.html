@@ -29,21 +29,31 @@
     <main>
       <section id="welcomeScreen" class="screen welcome-screen active">
         <div class="hero-copy">
-          <div class="opening-label"><span>UPXP 2026</span><i>Experiência universitária</i></div>
-          <div class="eyebrow"><span></span> ADM + CIÊNCIAS CONTÁBEIS</div>
-          <h1>O CAMPUS<br />É O SEU <em>JOGO.</em></h1>
-          <p>Descubra códigos, responda aos desafios e dispute o topo do ranking.</p>
-          <div class="mission-flow" aria-label="Como funciona">
-            <span><b>01</b> Explore</span><i></i><span><b>02</b> Responda</span><i></i><span><b>03</b> Pontue</span>
-          </div>
+          <div class="eyebrow">MISSÃO UPXP 2026</div>
+          <h1>O campus é<br />o seu <em>jogo.</em></h1>
+          <p>Encontre os códigos, responda aos desafios e avance no ranking.</p>
           <div class="opening-actions">
-            <button class="primary-button" data-action="start">COMEÇAR AGORA <span>→</span></button>
-            <button class="text-button" data-action="show-ranking"><span>🏆</span> Ver ranking ao vivo</button>
+            <button class="primary-button" data-action="start">COMEÇAR <span>→</span></button>
+            <button class="text-button" data-action="show-ranking">Ver ranking</button>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <img src="assets/hero-negocios-v2.jpg" alt="" />
-          <div class="hero-stats"><span><strong>12</strong> desafios</span><i></i><span><strong>1.200</strong> pontos</span></div>
+        <div class="mission-map" aria-hidden="true">
+          <div class="hero-visual">
+            <span class="hero-orbit orbit-a"></span>
+            <span class="hero-orbit orbit-b"></span>
+            <img src="assets/campanha-upxp-2026.png" alt="" />
+            <div class="floating-badge badge-points"><b>+100</b><span>PONTOS</span></div>
+            <div class="floating-badge badge-live"><i></i><span>MISSÃO<br /><b>AO VIVO</b></span></div>
+          </div>
+          <div class="map-top"><span>MAPA DA MISSÃO</span><b>AO VIVO</b></div>
+          <div class="map-route">
+            <article class="map-node node-one"><i>01</i><div><small>ENCONTRE</small><strong>um código</strong></div></article>
+            <span class="route-line"></span>
+            <article class="map-node node-two"><i>02</i><div><small>RESOLVA</small><strong>o desafio</strong></div></article>
+            <span class="route-line"></span>
+            <article class="map-node node-three"><i>★</i><div><small>CONQUISTE</small><strong>o pódio</strong></div></article>
+          </div>
+          <div class="map-code"><span>CÓDIGO ENCONTRADO</span><strong>ADM<span>7K2</span></strong><i>+100 PTS</i></div>
         </div>
       </section>
 
@@ -63,13 +73,25 @@
         </div>
       </section>
 
+      <section id="instructionsScreen" class="screen instructions-screen">
+        <div class="instructions-card">
+          <div class="eyebrow">ANTES DE COMEÇAR</div>
+          <h2>Como funciona</h2>
+          <div class="instructions-list">
+            <article><b>1</b><div><strong>Explore o campus</strong><p>Procure os pontos da Missão UPXP.</p></div></article>
+            <article><b>2</b><div><strong>Encontre um código</strong><p>Digite o código indicado para abrir o desafio.</p></div></article>
+            <article><b>3</b><div><strong>Responda e pontue</strong><p>Quanto mais acertos, melhor sua posição no ranking.</p></div></article>
+          </div>
+          <p class="instructions-note">Sua sessão fica salva neste aparelho. Ao voltar, você continua com a mesma pontuação.</p>
+          <button class="primary-button full" data-action="enter-game">ENTENDI, VAMOS COMEÇAR <span>→</span></button>
+        </div>
+      </section>
+
       <section id="gameScreen" class="screen game-screen">
         <div class="game-header">
           <div><span class="muted">EXPLORADOR(A)</span><h2 id="playerGreeting">Olá!</h2></div>
           <div class="score-pill"><span>SEUS PONTOS</span><strong id="playerScore">0</strong></div>
         </div>
-        <div class="progress-wrap"><div><span>Progresso da missão</span><strong id="progressText">0 desafios</strong></div><div class="progress-track"><i id="progressBar"></i></div></div>
-        <div class="next-step"><span>PRÓXIMO PASSO</span><strong>Procure um ponto da missão no campus</strong><p>Quando encontrar, digite o código indicado no campo abaixo.</p></div>
         <div class="code-panel">
           <div class="radar"><span>⌖</span></div>
           <div>
@@ -80,7 +102,11 @@
             <div id="codeMessage" class="message" role="status"></div>
           </div>
         </div>
-        <div class="game-actions"><button class="secondary-button" data-action="show-ranking">🏆 Ranking ao vivo</button><button class="text-button" data-action="logout">Sair da missão</button></div>
+        <div class="game-actions"><button class="secondary-button" data-action="show-ranking">🏆 Ranking ao vivo</button></div>
+        <aside class="motivation" aria-live="polite">
+          <span>⚡</span>
+          <div><small>ACONTECE AGORA</small><strong id="motivationText">Todo campeão começa pelo primeiro desafio.</strong></div>
+        </aside>
       </section>
 
       <section id="challengeScreen" class="screen challenge-screen">

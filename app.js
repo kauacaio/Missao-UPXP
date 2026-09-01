@@ -7,8 +7,13 @@ function getSavedPlayer() {
   catch { localStorage.removeItem("upxp_player"); return null; }
 }
 
-const state = { player: getSavedPlayer(), challenge: null, selectedAnswer: null, previous: "welcomeScreen", channel: null };
-const TOTAL_CHALLENGES = 12;
+const state = { player: getSavedPlayer(), challenge: null, selectedAnswer: null, previous: "welcomeScreen", channel: null, lastRanking: [], activity: [], feedTurn: 0 };
+const MOTIVATIONAL_MESSAGES = [
+  "Todo campeão começa pelo primeiro desafio.",
+  "Cada resposta aproxima você do pódio.",
+  "Continue explorando — o próximo código pode mudar o jogo.",
+  "Grandes resultados são construídos desafio por desafio.",
+];
 const screens = [...document.querySelectorAll(".screen")];
 const $ = (id) => document.getElementById(id);
 
@@ -37,7 +42,7 @@ async function registerPlayer(event) {
   const { data, error } = await db.from("players").insert(payload).select("id,name,school,class_name,score,completed_count").single();
   button.disabled = false; button.innerHTML = "ENTRAR NO JOGO <span>→</span>";
   if (error) return toast("Não foi possível entrar. Tente novamente.", "error");
-  state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); showScreen("gameScreen");
+  state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); showScreen("instructionsScreen");
 }
 
 async function refreshPlayer() {
@@ -52,8 +57,46 @@ function updatePlayer() {
   $("playerGreeting").textContent = state.player.name;
   $("playerScore").textContent = state.player.score || 0;
   const count = state.player.completed_count || 0;
-  $("progressText").textContent = `${count} de ${TOTAL_CHALLENGES} desafios`;
-  $("progressBar").style.width = `${Math.min(100, (count / TOTAL_CHALLENGES) * 100)}%`;
+  if (!state.activity.length) $("motivationText").textContent = MOTIVATIONAL_MESSAGES[Math.min(count, MOTIVATIONAL_MESSAGES.length - 1)];
+}
+
+function showNextFeedMessage() {
+  const text = $("motivationText");
+  if (!text) return;
+  const showActivity = state.activity.length && state.feedTurn % 2 === 1;
+  if (showActivity) {
+    const message = state.activity.shift();
+    state.activity.push(message);
+    text.textContent = message;
+  } else {
+    text.textContent = MOTIVATIONAL_MESSAGES[Math.floor(state.feedTurn / 2) % MOTIVATIONAL_MESSAGES.length];
+  }
+  text.classList.remove("feed-pulse");
+  void text.offsetWidth;
+  text.classList.add("feed-pulse");
+  state.feedTurn += 1;
+}
+
+async function updateActivityFeed() {
+  if (!db) return;
+  const { data, error } = await db.from("leaderboard").select("id,name,score").limit(10);
+  if (error || !data) return;
+  if (state.lastRanking.length) {
+    const oldPositions = new Map(state.lastRanking.map((player, index) => [player.id, index + 1]));
+    const changes = [];
+    data.forEach((player, index) => {
+      const oldPosition = oldPositions.get(player.id);
+      const newPosition = index + 1;
+      if (oldPosition && newPosition < oldPosition) changes.push(`${player.name} subiu para ${newPosition}º lugar 🚀`);
+      if (oldPosition && newPosition > oldPosition) changes.push(`${player.name} caiu para ${newPosition}º lugar`);
+    });
+    if (changes.length) {
+      state.activity = [...changes.slice(0, 4), ...state.activity].filter((message, index, list) => list.indexOf(message) === index).slice(0, 6);
+      state.feedTurn = 1;
+      showNextFeedMessage();
+    }
+  }
+  state.lastRanking = data;
 }
 
 async function validateCode(event) {
@@ -98,7 +141,8 @@ async function loadRanking() {
   showScreen("rankingScreen"); if (!ensureConfigured()) return;
   const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").limit(50);
   if (error) return toast("Não foi possível carregar o ranking.", "error");
-  const top = data.slice(0, 3); $("podium").innerHTML = top.map((p, i) => `<article class="podium-card place-${i + 1}"><span>${i === 0 ? "🏆" : i === 1 ? "🥈" : "🥉"}</span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.school)}</small><b>${p.score} pts</b></article>`).join("");
+  const top = data.slice(0, 3);
+  $("podium").innerHTML = top.map((p, i) => `<article class="podium-card place-${i + 1}"><span>${i === 0 ? "🏆" : i === 1 ? "🥈" : "🥉"}</span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.school)}</small><b>${p.score} pts</b></article>`).join("");
   $("rankingList").innerHTML = data.map((p, i) => `<div class="ranking-row ${p.id === state.player?.id ? "is-you" : ""}"><b>${String(i + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(p.name)}${p.id === state.player?.id ? " (você)" : ""}</strong><small>${escapeHtml(p.school)}</small></span><em>${p.score}</em></div>`).join("");
   $("rankingEmpty").classList.toggle("hidden", data.length > 0);
 }
@@ -106,6 +150,7 @@ async function loadRanking() {
 function subscribeRanking() {
   if (!db || state.channel) return;
   state.channel = db.channel("ranking-live").on("postgres_changes", { event: "UPDATE", schema: "public", table: "players" }, () => {
+    updateActivityFeed();
     if ($("rankingScreen").classList.contains("active")) loadRanking();
   }).subscribe();
 }
@@ -118,9 +163,9 @@ document.addEventListener("click", (event) => {
   if (action === "start") showScreen(state.player ? "gameScreen" : "registerScreen");
   if (action === "home") showScreen("welcomeScreen");
   if (action === "game" || action === "continue") { $("codeInput").value = ""; showScreen("gameScreen"); }
+  if (action === "enter-game") { sessionStorage.setItem("upxp_instructions_seen", "1"); showScreen("gameScreen"); }
   if (action === "show-ranking") loadRanking();
   if (action === "previous") showScreen(state.previous === "rankingScreen" ? "welcomeScreen" : state.previous);
-  if (action === "logout") { localStorage.removeItem("upxp_player"); state.player = null; showScreen("welcomeScreen"); }
 });
 $("rankingShortcut").addEventListener("click", loadRanking);
 $("registerForm").addEventListener("submit", registerPlayer);
@@ -134,7 +179,7 @@ $("confirmAnswer").addEventListener("click", () => submitAnswer(state.selectedAn
 async function restoreSession() {
   if (!state.player) return;
   updatePlayer();
-  showScreen("gameScreen");
+  showScreen(sessionStorage.getItem("upxp_instructions_seen") ? "gameScreen" : "instructionsScreen");
   if (!db) return;
   const valid = await refreshPlayer();
   if (!valid) {
@@ -147,3 +192,5 @@ async function restoreSession() {
 
 restoreSession();
 subscribeRanking();
+updateActivityFeed();
+setInterval(showNextFeedMessage, 6000);
