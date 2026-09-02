@@ -19,7 +19,7 @@
     <div class="noise"></div>
     <header class="topbar">
       <a class="brand" href="#" aria-label="Missão UPXP 2026">
-        <img class="unipar-logo" src="assets/unipar-logo.jpg" alt="UNIPAR - Universidade Paranaense" />
+        <img class="unipar-logo" src="assets/unipar-logo-horizontal.png" alt="UNIPAR - Universidade Paranaense" />
         <span class="brand-divider"></span>
         <span>MISSÃO <strong>UPXP</strong></span>
       </a>
@@ -62,12 +62,13 @@
         <div class="panel narrow-panel">
           <div class="form-intro"><div class="step-label">CADASTRO RÁPIDO</div><span>Leva menos de 1 minuto</span></div>
           <h2>Como vamos<br /><em>te chamar?</em></h2>
-          <p>Seu apelido e sua escola aparecerão no ranking. Não use seu nome completo.</p>
+          <p>Precisamos apenas do seu nome e telefone para criar sua participação.</p>
           <form id="registerForm">
-            <label>Apelido <small>Visível no ranking</small><input id="playerName" name="name" maxlength="30" autocomplete="nickname" placeholder="Ex.: Ana C." required /></label>
-            <label>Escola<input id="playerSchool" name="school" maxlength="80" autocomplete="organization" placeholder="Digite o nome da sua escola" required /></label>
-            <label>Turma ou série<input id="playerClass" name="className" maxlength="30" placeholder="Ex.: 3º ano A" required /></label>
-            <label class="consent"><input type="checkbox" required /><span>Concordo com o uso dos dados para participação no evento.</span></label>
+            <label>Nome <small>Visível no ranking</small><input id="playerName" name="name" maxlength="60" autocomplete="name" placeholder="Digite seu nome" required /></label>
+            <label>Telefone / WhatsApp<input id="playerPhone" name="phone" inputmode="tel" maxlength="15" autocomplete="tel" placeholder="(44) 99999-9999" required /></label>
+            <label class="consent"><input id="privacyConsent" type="checkbox" required /><span>Li e concordo com o uso dos meus dados para participar da Missão UPXP.</span></label>
+            <label class="consent marketing-consent"><input id="marketingConsent" type="checkbox" /><span>Quero receber novidades, eventos e campanhas da UNIPAR por telefone ou WhatsApp. <b>Opcional.</b></span></label>
+            <p class="form-privacy">Seus dados ficam em uma área restrita. Você pode solicitar correção, retirada do consentimento ou exclusão à equipe responsável pelo evento.</p>
             <button class="primary-button full" type="submit">CRIAR MINHA PARTICIPAÇÃO <span>→</span></button>
           </form>
         </div>

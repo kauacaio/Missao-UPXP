@@ -17,6 +17,14 @@ const MOTIVATIONAL_MESSAGES = [
 const screens = [...document.querySelectorAll(".screen")];
 const $ = (id) => document.getElementById(id);
 
+function sortLeaderboard(players = []) {
+  return [...players].sort((a, b) =>
+    (Number(b.score) || 0) - (Number(a.score) || 0) ||
+    (Number(b.completed_count) || 0) - (Number(a.completed_count) || 0) ||
+    String(a.name || "").localeCompare(String(b.name || ""), "pt-BR")
+  );
+}
+
 function showScreen(id) {
   const current = screens.find((s) => s.classList.contains("active"));
   if (current && id === "rankingScreen") state.previous = current.id;
@@ -38,8 +46,12 @@ function ensureConfigured() {
 async function registerPlayer(event) {
   event.preventDefault(); if (!ensureConfigured()) return;
   const button = event.submitter; button.disabled = true; button.textContent = "ENTRANDO...";
-  const payload = { name: $("playerName").value.trim(), school: $("playerSchool").value.trim(), class_name: $("playerClass").value.trim() };
-  const { data, error } = await db.from("players").insert(payload).select("id,name,school,class_name,score,completed_count").single();
+  const payload = {
+    participant_name: $("playerName").value.trim(),
+    participant_phone: $("playerPhone").value.replace(/\D/g, ""),
+    accepts_marketing: $("marketingConsent").checked,
+  };
+  const { data, error } = await db.rpc("register_player", payload).single();
   button.disabled = false; button.innerHTML = "ENTRAR NO JOGO <span>→</span>";
   if (error) return toast("Não foi possível entrar. Tente novamente.", "error");
   state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); showScreen("instructionsScreen");
@@ -79,12 +91,13 @@ function showNextFeedMessage() {
 
 async function updateActivityFeed() {
   if (!db) return;
-  const { data, error } = await db.from("leaderboard").select("id,name,score").limit(10);
+  const { data, error } = await db.from("leaderboard").select("id,name,score,completed_count").order("score", { ascending:false }).order("completed_count", { ascending:false }).order("name", { ascending:true }).limit(10);
   if (error || !data) return;
+  const orderedData = sortLeaderboard(data);
   if (state.lastRanking.length) {
     const oldPositions = new Map(state.lastRanking.map((player, index) => [player.id, index + 1]));
     const changes = [];
-    data.forEach((player, index) => {
+    orderedData.forEach((player, index) => {
       const oldPosition = oldPositions.get(player.id);
       const newPosition = index + 1;
       if (oldPosition && newPosition < oldPosition) changes.push(`${player.name} subiu para ${newPosition}º lugar 🚀`);
@@ -96,7 +109,7 @@ async function updateActivityFeed() {
       showNextFeedMessage();
     }
   }
-  state.lastRanking = data;
+  state.lastRanking = orderedData;
 }
 
 async function validateCode(event) {
@@ -139,12 +152,13 @@ async function submitAnswer(index) {
 
 async function loadRanking() {
   showScreen("rankingScreen"); if (!ensureConfigured()) return;
-  const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").limit(50);
+  const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").order("score", { ascending:false }).order("completed_count", { ascending:false }).order("name", { ascending:true }).limit(50);
   if (error) return toast("Não foi possível carregar o ranking.", "error");
-  const top = data.slice(0, 3);
+  const ranking = sortLeaderboard(data);
+  const top = ranking.slice(0, 3);
   $("podium").innerHTML = top.map((p, i) => `<article class="podium-card place-${i + 1}"><span>${i === 0 ? "🏆" : i === 1 ? "🥈" : "🥉"}</span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.school)}</small><b>${p.score} pts</b></article>`).join("");
-  $("rankingList").innerHTML = data.map((p, i) => `<div class="ranking-row ${p.id === state.player?.id ? "is-you" : ""}"><b>${String(i + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(p.name)}${p.id === state.player?.id ? " (você)" : ""}</strong><small>${escapeHtml(p.school)}</small></span><em>${p.score}</em></div>`).join("");
-  $("rankingEmpty").classList.toggle("hidden", data.length > 0);
+  $("rankingList").innerHTML = ranking.map((p, i) => `<div class="ranking-row ${p.id === state.player?.id ? "is-you" : ""}"><b>${String(i + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(p.name)}${p.id === state.player?.id ? " (você)" : ""}</strong><small>${escapeHtml(p.school)}</small></span><em>${p.score}</em></div>`).join("");
+  $("rankingEmpty").classList.toggle("hidden", ranking.length > 0);
 }
 
 function subscribeRanking() {
@@ -173,6 +187,13 @@ $("codeForm").addEventListener("submit", validateCode);
 $("codeInput").addEventListener("input", (event) => {
   event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   $("codeMessage").textContent = ""; $("codeMessage").className = "message";
+});
+$("playerPhone").addEventListener("input", (event) => {
+  const digits = event.target.value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length <= 2) event.target.value = digits;
+  else if (digits.length <= 6) event.target.value = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  else if (digits.length <= 10) event.target.value = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  else event.target.value = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
 });
 $("confirmAnswer").addEventListener("click", () => submitAnswer(state.selectedAnswer));
 

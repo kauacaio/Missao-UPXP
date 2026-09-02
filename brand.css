@@ -1,7 +1,7 @@
 /* Integração da marca institucional UNIPAR */
 .unipar-logo {
-  width: 132px;
-  height: 50px;
+  width: 170px;
+  height: 48px;
   object-fit: contain;
   object-position: center;
 }
@@ -48,6 +48,6 @@
 @media (max-width: 760px) {
   .topbar { padding-inline: 14px; }
   .brand { gap: 7px; font-size: 10px; }
-  .unipar-logo { width: 106px; height: 39px; }
+  .unipar-logo { width: 132px; height: 37px; }
   .brand-divider { height: 27px; }
 }

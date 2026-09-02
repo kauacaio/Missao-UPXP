@@ -114,6 +114,8 @@
   .challenge-screen .feedback p { display:none; }
 }
 
+.marketing-consent{padding:12px;background:#f4f0f7}.marketing-consent b{color:var(--purple)}
+.form-privacy{margin:0!important;color:var(--muted);font-size:10px;line-height:1.5}
 .instructions-screen {
   background:var(--deep);
   color:#fff;
