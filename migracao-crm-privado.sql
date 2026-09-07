@@ -76,39 +76,40 @@ as $$
 declare
   clean_name text := trim(participant_name);
   clean_phone text := regexp_replace(participant_phone, '[^0-9]', '', 'g');
-  player_row public.players%rowtype;
+  v_player_id uuid;
 begin
   if char_length(clean_name) not between 2 and 60 then raise exception 'Nome inválido'; end if;
   if clean_phone !~ '^[0-9]{10,11}$' then raise exception 'Telefone inválido'; end if;
 
-  select p.* into player_row
+  select p.id into v_player_id
   from public.players p
   join public.campaign_leads cl on cl.player_id = p.id
   where cl.phone = clean_phone
   order by p.score desc, p.completed_count desc, p.created_at asc
   limit 1;
 
-  if player_row.id is null then
+  if v_player_id is null then
     insert into public.players(name, school, class_name)
     values(clean_name, 'Não informado', 'Não informado')
-    returning * into player_row;
+    returning id into v_player_id;
   else
-    update public.players set name = clean_name where id = player_row.id;
+    update public.players set name = clean_name where id = v_player_id;
   end if;
 
   insert into public.campaign_leads(player_id, name, phone, marketing_consent, marketing_consented_at)
-  values(player_row.id, clean_name, clean_phone, coalesce(accepts_marketing,false),
+  values(v_player_id, clean_name, clean_phone, coalesce(accepts_marketing,false),
     case when accepts_marketing then now() else null end)
   on conflict(phone) do update set
-    player_id = player_row.id,
+    player_id = v_player_id,
     name = excluded.name,
     marketing_consent = excluded.marketing_consent,
     marketing_consented_at = excluded.marketing_consented_at,
     privacy_accepted_at = now(),
     updated_at = now();
 
-  return query select player_row.id, player_row.name, player_row.school,
-    player_row.class_name, player_row.score, player_row.completed_count;
+  return query select p.id, p.name, p.school, p.class_name, p.score, p.completed_count
+    from public.players p
+    where p.id = v_player_id;
 end;
 $$;
 

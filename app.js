@@ -16,6 +16,7 @@ const MOTIVATIONAL_MESSAGES = [
 ];
 const screens = [...document.querySelectorAll(".screen")];
 const $ = (id) => document.getElementById(id);
+const EVENT_END_AT = config.eventEndAt ? new Date(config.eventEndAt) : null;
 
 function sortLeaderboard(players = []) {
   return [...players].sort((a, b) =>
@@ -62,6 +63,15 @@ async function refreshPlayer() {
   const { data, error } = await db.from("players").select("id,name,school,class_name,score,completed_count").eq("id", state.player.id).single();
   if (error || !data) return error?.code === "PGRST116" ? "missing" : false;
   state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); return true;
+}
+
+async function refreshPlayerWithRetry(attempts = 2) {
+  for (let i = 0; i < attempts; i++) {
+    const result = await refreshPlayer();
+    if (result === true || result === "missing") return result;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  return false;
 }
 
 function updatePlayer() {
@@ -175,6 +185,16 @@ function subscribeRanking() {
 
 function escapeHtml(value = "") { const d = document.createElement("div"); d.textContent = value; return d.innerHTML; }
 
+function maybeShowEndMessage() {
+  if (!EVENT_END_AT || isNaN(EVENT_END_AT.getTime())) return;
+  if (sessionStorage.getItem("upxp_end_shown") === "1") return;
+  if (Date.now() < EVENT_END_AT.getTime()) return;
+  sessionStorage.setItem("upxp_end_shown", "1");
+  const el = $("endModal");
+  el?.classList.remove("hidden");
+  toast("A Missão UPXP chegou ao fim — confira a mensagem final.", "success");
+}
+
 document.addEventListener("click", (event) => {
   const answer = event.target.closest(".answer"); if (answer) return selectAnswer(Number(answer.dataset.index));
   const action = event.target.closest("[data-action]")?.dataset.action;
@@ -184,6 +204,7 @@ document.addEventListener("click", (event) => {
   if (action === "enter-game") { sessionStorage.setItem("upxp_instructions_seen", "1"); showScreen("gameScreen"); }
   if (action === "show-ranking") loadRanking();
   if (action === "previous") showScreen(state.previous === "rankingScreen" ? "welcomeScreen" : state.previous);
+  if (action === "end-dismiss") $("endModal")?.classList.add("hidden");
 });
 $("rankingShortcut").addEventListener("click", loadRanking);
 $("registerForm").addEventListener("submit", registerPlayer);
@@ -206,7 +227,7 @@ async function restoreSession() {
   updatePlayer();
   showScreen(sessionStorage.getItem("upxp_instructions_seen") ? "gameScreen" : "instructionsScreen");
   if (!db) return;
-  const result = await refreshPlayer();
+  const result = await refreshPlayerWithRetry();
   if (result === "missing") {
     localStorage.removeItem("upxp_player");
     state.player = null;
@@ -221,3 +242,5 @@ restoreSession();
 subscribeRanking();
 updateActivityFeed();
 setInterval(showNextFeedMessage, 6000);
+setInterval(maybeShowEndMessage, 30000);
+maybeShowEndMessage();

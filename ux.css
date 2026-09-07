@@ -116,6 +116,24 @@
 
 .marketing-consent{padding:12px;background:#f4f0f7}.marketing-consent b{color:var(--purple)}
 .form-privacy{margin:0!important;color:var(--muted);font-size:10px;line-height:1.5}
+
+.end-modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:22px;background:var(--ink);color:#fff;animation:rise .4s ease}
+.end-modal.hidden{display:none}
+.end-card{width:min(100%,560px);padding:clamp(30px,6vw,58px);background:linear-gradient(160deg,var(--purple),var(--deep));box-shadow:12px 12px 0 var(--lime);text-align:center}
+.end-chip{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 20px;border-radius:50%;background:var(--lime);color:var(--ink);font-size:26px;box-shadow:0 0 0 9px #c8ff3d22}
+.end-card .eyebrow{margin-bottom:14px;color:#fff}
+.end-card h2{margin:0 0 16px;font:clamp(34px,7vw,56px)/.92 "Archivo Black",sans-serif;letter-spacing:-.05em}
+.end-card p{margin:0 0 28px;color:#e9e2f2;font-size:15px;line-height:1.7}
+.end-card p strong{color:var(--lime)}
+.end-card .primary-button{width:min(100%,300px);margin:0 auto}
+
+@media(max-width:760px){
+  .end-modal{padding:16px}
+  .end-card{box-shadow:8px 8px 0 var(--lime)}
+  .end-chip{width:50px;height:50px;margin-bottom:16px}
+  .end-card h2{font-size:clamp(30px,8.5vw,42px)}
+  .end-card p{font-size:14px}
+}
 .instructions-screen {
   background:var(--deep);
   color:#fff;
