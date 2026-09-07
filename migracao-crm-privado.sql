@@ -3,8 +3,13 @@
 
 create extension if not exists pgcrypto;
 
-alter table public.players drop constraint if exists players_name_check;
-alter table public.players add constraint players_name_check check (char_length(name) between 2 and 60);
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'players_name_check' and conrelid = 'public.players'::regclass) then
+    alter table public.players add constraint players_name_check check (char_length(name) between 2 and 60);
+  end if;
+end;
+$$;
 
 create table if not exists public.campaign_leads (
   id uuid primary key default gen_random_uuid(),
@@ -71,28 +76,39 @@ as $$
 declare
   clean_name text := trim(participant_name);
   clean_phone text := regexp_replace(participant_phone, '[^0-9]', '', 'g');
-  new_player public.players%rowtype;
+  player_row public.players%rowtype;
 begin
   if char_length(clean_name) not between 2 and 60 then raise exception 'Nome inválido'; end if;
   if clean_phone !~ '^[0-9]{10,11}$' then raise exception 'Telefone inválido'; end if;
 
-  insert into public.players(name, school, class_name)
-  values(clean_name, 'Não informado', 'Não informado')
-  returning * into new_player;
+  select p.* into player_row
+  from public.players p
+  join public.campaign_leads cl on cl.player_id = p.id
+  where cl.phone = clean_phone
+  order by p.score desc, p.completed_count desc, p.created_at asc
+  limit 1;
+
+  if player_row.id is null then
+    insert into public.players(name, school, class_name)
+    values(clean_name, 'Não informado', 'Não informado')
+    returning * into player_row;
+  else
+    update public.players set name = clean_name where id = player_row.id;
+  end if;
 
   insert into public.campaign_leads(player_id, name, phone, marketing_consent, marketing_consented_at)
-  values(new_player.id, clean_name, clean_phone, coalesce(accepts_marketing,false),
+  values(player_row.id, clean_name, clean_phone, coalesce(accepts_marketing,false),
     case when accepts_marketing then now() else null end)
   on conflict(phone) do update set
-    player_id = excluded.player_id,
+    player_id = player_row.id,
     name = excluded.name,
     marketing_consent = excluded.marketing_consent,
     marketing_consented_at = excluded.marketing_consented_at,
     privacy_accepted_at = now(),
     updated_at = now();
 
-  return query select new_player.id, new_player.name, new_player.school,
-    new_player.class_name, new_player.score, new_player.completed_count;
+  return query select player_row.id, player_row.name, player_row.school,
+    player_row.class_name, player_row.score, player_row.completed_count;
 end;
 $$;
 

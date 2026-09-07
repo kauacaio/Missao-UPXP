@@ -60,7 +60,7 @@ async function registerPlayer(event) {
 async function refreshPlayer() {
   if (!db || !state.player) return false;
   const { data, error } = await db.from("players").select("id,name,school,class_name,score,completed_count").eq("id", state.player.id).single();
-  if (error || !data) return false;
+  if (error || !data) return error?.code === "PGRST116" ? "missing" : false;
   state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); return true;
 }
 
@@ -143,10 +143,14 @@ async function submitAnswer(index) {
   document.querySelectorAll(".answer").forEach((b) => (b.disabled = true));
   const { data, error } = await db.rpc("submit_answer", { player_uuid: state.player.id, challenge_uuid: state.challenge.challenge_id, selected_index: index });
   if (error) { toast("Não foi possível registrar a resposta.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>"; return; }
-  const result = data[0]; const feedback = $("answerFeedback");
+  const result = data?.[0];
+  if (!result) { toast("Não foi possível registrar a resposta. Tente novamente.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>"; return; }
+  if (result.is_correct) state.player.score = (Number(state.player.score) || 0) + (Number(result.points_earned) || 0);
+  const feedback = $("answerFeedback");
   document.querySelector(`.answer[data-index="${index}"]`)?.classList.add(result.is_correct ? "correct" : "wrong");
   feedback.className = `feedback ${result.is_correct ? "success" : "failure"}`;
   feedback.innerHTML = `<strong>${result.is_correct ? `Acertou! +${result.points_earned} pontos` : "Não foi dessa vez!"}</strong><p>${escapeHtml(result.explanation || "Continue explorando o campus.")}</p><button class="primary-button" data-action="continue">CONTINUAR A MISSÃO →</button>`;
+  updatePlayer();
   await refreshPlayer();
 }
 
@@ -202,12 +206,14 @@ async function restoreSession() {
   updatePlayer();
   showScreen(sessionStorage.getItem("upxp_instructions_seen") ? "gameScreen" : "instructionsScreen");
   if (!db) return;
-  const valid = await refreshPlayer();
-  if (!valid) {
+  const result = await refreshPlayer();
+  if (result === "missing") {
     localStorage.removeItem("upxp_player");
     state.player = null;
     showScreen("welcomeScreen");
     toast("Sua participação não foi encontrada. Entre novamente.", "error");
+  } else if (result === false) {
+    toast("Não foi possível validar sua sessão. Verifique sua conexão e tente recarregar.", "error");
   }
 }
 
