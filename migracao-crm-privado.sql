@@ -73,6 +73,7 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+#variable_conflict use_column
 declare
   clean_name text := trim(participant_name);
   clean_phone text := regexp_replace(participant_phone, '[^0-9]', '', 'g');
@@ -89,11 +90,11 @@ begin
   limit 1;
 
   if v_player_id is null then
-    insert into public.players(name, school, class_name)
+    insert into public.players as p(name, school, class_name)
     values(clean_name, 'Não informado', 'Não informado')
-    returning id into v_player_id;
+    returning p.id into v_player_id;
   else
-    update public.players set name = clean_name where id = v_player_id;
+    update public.players as p set name = clean_name where p.id = v_player_id;
   end if;
 
   insert into public.campaign_leads(player_id, name, phone, marketing_consent, marketing_consented_at)
@@ -114,9 +115,87 @@ end;
 $$;
 
 revoke all on function public.register_player(text,text,boolean) from public;
-grant execute on function public.register_player(text,text,boolean) to anon;
+grant execute on function public.register_player(text,text,boolean) to anon, authenticated;
+
+-- Consulta privada: valida o administrador antes de acessar a participação.
+-- Não depende das políticas de leitura direta de players no navegador.
+create or replace function public.get_campaign_leads()
+returns table (
+  id uuid, name text, phone text, marketing_consent boolean,
+  status text, created_at timestamptz, player jsonb
+)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+begin
+  if not public.is_campaign_admin() then
+    raise exception 'Acesso não autorizado ao CRM' using errcode = '42501';
+  end if;
+
+  return query
+  select cl.id, cl.name, cl.phone, cl.marketing_consent, cl.status, cl.created_at,
+    case when p.id is null then null::jsonb
+      else jsonb_build_object('score', p.score, 'completed_count', p.completed_count)
+    end
+  from public.campaign_leads cl
+  left join public.players p on p.id = cl.player_id;
+end;
+$$;
+
+revoke all on function public.get_campaign_leads() from public, anon;
+grant execute on function public.get_campaign_leads() to authenticated;
 
 -- Depois de criar o primeiro usuário em Authentication > Users, libere o acesso:
 -- insert into public.campaign_admins(user_id)
 -- select id from auth.users where email = 'coordenacao@exemplo.com';
 
+-- Fichas dos contatos: etiquetas e histórico de comentários.
+alter table public.campaign_leads add column if not exists tags text[] not null default '{}';
+create table if not exists public.campaign_lead_comments (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references public.campaign_leads(id) on delete cascade,
+  author_id uuid not null default auth.uid() references auth.users(id),
+  body text not null check (char_length(trim(body)) between 1 and 4000),
+  created_at timestamptz not null default now()
+);
+alter table public.campaign_lead_comments enable row level security;
+revoke all on public.campaign_lead_comments from anon, authenticated;
+grant select, insert on public.campaign_lead_comments to authenticated;
+drop policy if exists "admins read comments" on public.campaign_lead_comments;
+create policy "admins read comments" on public.campaign_lead_comments
+  for select to authenticated using (public.is_campaign_admin());
+drop policy if exists "admins add comments" on public.campaign_lead_comments;
+create policy "admins add comments" on public.campaign_lead_comments
+  for insert to authenticated with check (public.is_campaign_admin() and author_id = auth.uid());
+
+-- Catálogo compartilhado de etiquetas da universidade.
+create table if not exists public.campaign_tags (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (char_length(trim(name)) between 1 and 40 and name = trim(name)),
+  color text not null default '#6f35e8' check (color ~ '^#[0-9A-Fa-f]{6}$'),
+  created_at timestamptz not null default now()
+);
+create unique index if not exists campaign_tags_name_unique on public.campaign_tags (lower(name));
+alter table public.campaign_tags enable row level security;
+revoke all on public.campaign_tags from anon, authenticated;
+grant select, insert on public.campaign_tags to authenticated;
+drop policy if exists "admins read tags" on public.campaign_tags;
+create policy "admins read tags" on public.campaign_tags
+  for select to authenticated using (public.is_campaign_admin());
+drop policy if exists "admins create tags" on public.campaign_tags;
+create policy "admins create tags" on public.campaign_tags
+  for insert to authenticated with check (public.is_campaign_admin());
+
+-- Preserva as etiquetas já usadas nos contatos no catálogo comum.
+insert into public.campaign_tags(name)
+select distinct trim(tag)
+from public.campaign_leads cl cross join lateral unnest(cl.tags) as tag
+where char_length(trim(tag)) between 1 and 40
+on conflict do nothing;
+
+-- Peso das etiquetas no termômetro do lead (as antigas começam em zero).
+alter table public.campaign_tags
+  add column if not exists temperature_points integer not null default 0
+  check (temperature_points between 0 and 100);

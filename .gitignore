@@ -4,3 +4,6 @@
 
 # Original em alta resolução; o site usa a versão JPG otimizada.
 assets/hero-negocios-v2.png
+
+# Migração necessária para o modo extra do jogo.
+!migracao-modo-bonus.sql

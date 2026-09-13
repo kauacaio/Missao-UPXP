@@ -10,20 +10,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="brand.css" />
+    <link rel="stylesheet" href="brand.css?v=20260913-values-1" />
     <link rel="stylesheet" href="mobile.css" />
     <link rel="stylesheet" href="ux.css" />
     <link rel="stylesheet" href="landing-v2.css" />
+    <link rel="stylesheet" href="bonus.css?v=6" />
   </head>
   <body>
     <div class="noise"></div>
     <header class="topbar">
       <a class="brand" href="#" aria-label="Missão UPXP 2026">
-        <img class="unipar-logo" src="assets/unipar-logo-horizontal.png" alt="UNIPAR - Universidade Paranaense" />
-        <span class="brand-divider"></span>
-        <span>MISSÃO <strong>UPXP</strong></span>
+        <span class="header-logo"><img class="unipar-logo" src="assets/unipar-logo-horizontal.png" alt="UNIPAR - Universidade Paranaense" /></span>
+        <span class="header-wordmark">MISSÃO <strong>UPXP</strong></span>
       </a>
-      <button id="rankingShortcut" class="icon-button hidden" aria-label="Abrir ranking">🏆</button>
+      <button id="rankingShortcut" class="icon-button hidden" aria-label="Abrir ranking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Z M8 5H4v2a4 4 0 0 0 4 4 M16 5h4v2a4 4 0 0 1-4 4 M12 13v5 M8 21h8 M9 18h6v3H9z"/></svg></button>
     </header>
 
     <main>
@@ -83,6 +83,7 @@
             <article><b>2</b><div><strong>Encontre um código</strong><p>Digite o código indicado para abrir o desafio.</p></div></article>
             <article><b>3</b><div><strong>Responda e pontue</strong><p>Quanto mais acertos, melhor sua posição no ranking.</p></div></article>
           </div>
+          <p class="university-values-inline"><strong>UNIPAR</strong> · Educação, Evolução e Legado</p>
           <p class="instructions-note">Sua sessão fica salva neste aparelho. Ao voltar, você continua com a mesma pontuação.</p>
           <button class="primary-button full" data-action="enter-game">ENTENDI, VAMOS COMEÇAR <span>→</span></button>
         </div>
@@ -93,7 +94,7 @@
           <div><span class="muted">EXPLORADOR(A)</span><h2 id="playerGreeting">Olá!</h2></div>
           <div class="score-pill"><span>SEUS PONTOS</span><strong id="playerScore">0</strong></div>
         </div>
-        <div class="code-panel">
+        <div id="codePanel" class="code-panel">
           <div class="radar"><span>⌖</span></div>
           <div>
             <div class="step-label">ENCONTROU UM CÓDIGO?</div>
@@ -103,6 +104,14 @@
             <div id="codeMessage" class="message" role="status"></div>
           </div>
         </div>
+        <section id="bonusHub" class="bonus-hub hidden" aria-labelledby="bonusHubTitle">
+          <div class="bonus-hub-orbit" aria-hidden="true">✦</div>
+          <div class="bonus-kicker">VOCÊ DESBLOQUEOU A PRÓXIMA FASE</div>
+          <h3 id="bonusHubTitle">Sua missão<br /><em>continua.</em></h3>
+          <p>Novas perguntas. 15 segundos. Mais chances de subir no ranking.</p>
+          <button id="bonusContinue" class="bonus-play" data-action="bonus-next"><span class="bonus-play-icon" aria-hidden="true">▶</span><span>Continuar no game<small>Seu próximo desafio começa aqui</small></span><span aria-hidden="true">↗</span></button>
+          <div class="bonus-share-row"><div><strong>Educação, Evolução e Legado</strong><p>Sua participação na UNIPAR merece ser compartilhada.</p></div><button class="bonus-share-open" data-action="share-achievement">Criar meu post ↗</button></div>
+        </section>
         <div class="game-actions"><button class="secondary-button" data-action="show-ranking">🏆 Ranking ao vivo</button></div>
         <aside class="motivation" aria-live="polite">
           <span>⚡</span>
@@ -114,6 +123,7 @@
         <button class="back-button" data-action="game">← Voltar à missão</button>
         <div class="panel question-panel">
           <div class="question-meta"><span id="challengeLocation">LOCAL</span><strong id="challengePoints">+100 PONTOS</strong></div>
+          <div id="bonusTimer" class="bonus-timer hidden" role="timer" aria-label="Tempo restante"></div>
           <h2 id="questionText">Pergunta</h2>
           <p class="answer-help">Selecione uma alternativa e confirme sua resposta.</p>
           <div id="answersList" class="answers-list"></div>
@@ -130,6 +140,7 @@
         <p id="rankingEmpty" class="empty hidden">O ranking aparecerá assim que a primeira missão for concluída.</p>
       </section>
     </main>
+    <footer class="university-values" aria-label="Marca da universidade"><strong>UNIPAR</strong><span>Educação, Evolução e Legado</span></footer>
 
     <div id="endModal" class="end-modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle">
       <div class="end-card">
@@ -140,9 +151,30 @@
         <button class="primary-button" data-action="end-dismiss">CONFIA E VAI <span>→</span></button>
       </div>
     </div>
+    <dialog id="bonusModal" class="bonus-modal" aria-labelledby="bonusTitle">
+      <div id="bonusConfetti" class="bonus-confetti" aria-hidden="true"></div>
+      <button class="bonus-close" data-action="bonus-dismiss" aria-label="Fechar parabéns">×</button>
+      <div class="bonus-emblem" aria-hidden="true">★</div>
+      <div class="bonus-kicker">CONQUISTA DESBLOQUEADA</div>
+      <div class="bonus-milestone" aria-hidden="true">1.000<span>PONTOS</span></div>
+      <h2 id="bonusTitle">Mil pontos. Parabéns!</h2>
+      <p class="bonus-description">Você desbloqueou uma nova fase da missão.<br />UNIPAR: Educação, Evolução e Legado.</p>
+      <div class="bonus-rules"><span><b>Novas perguntas</b>Sorteadas para você</span><span><b>15 segundos</b>Para cada resposta</span></div>
+      <button class="bonus-start" data-action="bonus-next">Continuar no game <span aria-hidden="true">→</span></button>
+      <button class="bonus-later" data-action="bonus-dismiss">Vou continuar depois</button>
+    </dialog>
+    <dialog id="shareDialog" class="share-dialog" aria-labelledby="shareTitle">
+      <div class="share-heading"><div><div class="bonus-kicker">MISSÃO CUMPRIDA. HISTÓRIA PRA CONTAR.</div><h2 id="shareTitle">Sua conquista, do seu jeito.</h2></div><button class="share-close" data-action="share-close" aria-label="Fechar compartilhamento">×</button></div>
+      <div class="share-formats" role="group" aria-label="Formato da imagem"><button data-share-format="post" aria-pressed="true">Post</button><button data-share-format="story" aria-pressed="false">Story / Status</button><button data-share-format="certificate" aria-pressed="false">Certificado</button></div>
+      <div class="share-preview"><img id="sharePreview" alt="Prévia da imagem personalizada com seu nome e pontuação" /></div>
+      <p id="shareMessage" role="status">Escolha o formato e compartilhe sua conquista.</p>
+      <div class="share-actions"><button id="shareNative" class="bonus-start" data-action="share-native">Compartilhar imagem ↗</button><button id="shareDownload" class="bonus-share-open" data-action="share-download">Baixar PNG ↓</button></div>
+      <p class="share-tip">No celular, escolha um aplicativo disponível ao compartilhar. Você também pode baixar a imagem e publicar no Instagram ou WhatsApp.</p>
+    </dialog>
     <div id="toast" class="toast" role="alert"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <script src="app.js"></script>
+    <script src="app.js?v=20260913-bonus-4"></script>
+    <script src="share-achievement.js?v=3"></script>
   </body>
 </html>

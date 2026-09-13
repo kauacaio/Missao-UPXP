@@ -1,13 +1,19 @@
 const config = window.UPXP_CONFIG || {};
 const configured = config.supabaseUrl && !config.supabaseUrl.includes("SEU-PROJETO");
-const db = configured ? window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey) : null;
+// O participante usa um UUID local; a autenticação do CRM não pertence ao jogo.
+const db = configured ? window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+  auth: { storageKey: "upxp_game_auth", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+}) : null;
 
 function getSavedPlayer() {
   try { return JSON.parse(localStorage.getItem("upxp_player") || "null"); }
-  catch { localStorage.removeItem("upxp_player"); return null; }
+  catch { return null; }
 }
 
 const state = { player: getSavedPlayer(), challenge: null, selectedAnswer: null, previous: "welcomeScreen", channel: null, lastRanking: [], activity: [], feedTurn: 0 };
+state.bonus = null;
+state.bonusBusy = false;
+state.bonusCelebrated = new Set();
 const MOTIVATIONAL_MESSAGES = [
   "Todo campeão começa pelo primeiro desafio.",
   "Cada resposta aproxima você do pódio.",
@@ -28,7 +34,7 @@ function sortLeaderboard(players = []) {
 
 function showScreen(id) {
   const current = screens.find((s) => s.classList.contains("active"));
-  if (current && id === "rankingScreen") state.previous = current.id;
+  if (current && current.id !== "rankingScreen" && id === "rankingScreen") state.previous = current.id;
   screens.forEach((s) => s.classList.toggle("active", s.id === id));
   $("rankingShortcut").classList.toggle("hidden", !state.player || id === "rankingScreen");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -52,30 +58,57 @@ async function registerPlayer(event) {
     participant_phone: $("playerPhone").value.replace(/\D/g, ""),
     accepts_marketing: $("marketingConsent").checked,
   };
-  const { data, error } = await db.rpc("register_player", payload).single();
-  button.disabled = false; button.innerHTML = "ENTRAR NO JOGO <span>→</span>";
-  if (error) return toast("Não foi possível entrar. Tente novamente.", "error");
-  state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); showScreen("instructionsScreen");
+  try {
+    const { data, error } = await db.rpc("register_player", payload).single();
+    if (error || !data?.id) {
+      console.error("Falha no cadastro do participante/CRM", { code: error?.code, message: error?.message });
+      const message = error?.code === "P0001" ? error.message : "Não foi possível salvar seu cadastro. Tente novamente ou avise a organização.";
+      toast(message, "error"); return;
+    }
+    state.player = data;
+    try { localStorage.setItem("upxp_player", JSON.stringify(data)); }
+    catch { toast("Cadastro salvo, mas este navegador não conseguiu guardar sua participação neste aparelho.", "error"); }
+    updatePlayer(); showScreen("instructionsScreen");
+  } catch {
+    toast("Não foi possível confirmar o cadastro. Confira sua conexão e tente novamente com o mesmo telefone.", "error");
+  } finally {
+    button.disabled = false; button.innerHTML = "ENTRAR NO JOGO <span>→</span>";
+  }
 }
 
 async function refreshPlayer() {
   if (!db || !state.player) return false;
-  const { data, error } = await db.from("players").select("id,name,school,class_name,score,completed_count").eq("id", state.player.id).single();
-  if (error || !data) return error?.code === "PGRST116" ? "missing" : false;
-  state.player = data; localStorage.setItem("upxp_player", JSON.stringify(data)); updatePlayer(); return true;
+  const playerId = state.player.id;
+  try {
+    const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").eq("id", playerId).maybeSingle();
+    if (state.player?.id !== playerId) return false;
+    if (error) return false;
+    if (!data) return "missing";
+    state.player = { ...state.player, ...data };
+    savePlayerLocally(); updatePlayer(); return true;
+  } catch {
+    return false;
+  }
 }
 
 async function refreshPlayerWithRetry(attempts = 2) {
+  let result = false;
   for (let i = 0; i < attempts; i++) {
-    const result = await refreshPlayer();
-    if (result === true || result === "missing") return result;
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    result = await refreshPlayer();
+    if (result === true) return result;
+    if (i < attempts - 1) await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  return false;
+  return result;
+}
+
+function savePlayerLocally() {
+  try { localStorage.setItem("upxp_player", JSON.stringify(state.player)); }
+  catch { /* A participação em memória continua válida sem armazenamento local. */ }
 }
 
 function updatePlayer() {
   if (!state.player) return;
+  updateBonusUnlock();
   $("playerGreeting").textContent = state.player.name;
   $("playerScore").textContent = state.player.score || 0;
   const count = state.player.completed_count || 0;
@@ -124,6 +157,7 @@ async function updateActivityFeed() {
 
 async function validateCode(event) {
   event.preventDefault(); if (!ensureConfigured() || !state.player) return;
+  if (state.bonus && !state.bonus.finished) return startBonusRound();
   const code = $("codeInput").value.trim().toUpperCase(); const button = event.submitter;
   button.disabled = true; button.textContent = "BUSCANDO..."; $("codeMessage").textContent = ""; $("codeMessage").className = "message";
   const { data, error } = await db.rpc("get_challenge_by_code", { entered_code: code, player_uuid: state.player.id });
@@ -131,10 +165,12 @@ async function validateCode(event) {
   if (error || !data?.length) { $("codeMessage").textContent = "Código não encontrado. Confira os caracteres e tente novamente."; $("codeMessage").className = "message error"; return; }
   const challenge = data[0];
   if (challenge.already_answered) { $("codeMessage").textContent = "Este desafio já foi concluído. Procure outro ponto da missão."; $("codeMessage").className = "message success"; return; }
+  state.bonus = null; clearInterval(state.bonusTimer);
   state.challenge = challenge; renderChallenge(); showScreen("challengeScreen");
 }
 
 function renderChallenge() {
+  $("bonusTimer").classList.toggle("hidden", !state.bonus);
   const c = state.challenge; state.selectedAnswer = null; $("challengeLocation").textContent = c.location_name; $("challengePoints").textContent = `+${c.points} PONTOS`;
   $("questionText").textContent = c.question; $("answerFeedback").className = "feedback hidden";
   $("answersList").innerHTML = c.options.map((option, index) => `<button class="answer" data-index="${index}"><b>${String.fromCharCode(65 + index)}</b><span>${escapeHtml(option)}</span></button>`).join("");
@@ -142,12 +178,14 @@ function renderChallenge() {
 }
 
 function selectAnswer(index) {
+  if (state.bonus && (state.bonusBusy || state.bonus.finished || performance.now() >= state.bonus.deadline)) return;
   state.selectedAnswer = index;
   document.querySelectorAll(".answer").forEach((button) => button.classList.toggle("selected", Number(button.dataset.index) === index));
   $("confirmAnswer").disabled = false;
 }
 
 async function submitAnswer(index) {
+  if (state.bonus) return submitBonusAnswer(index);
   if (index === null || index === undefined) return;
   $("confirmAnswer").disabled = true; $("confirmAnswer").textContent = "ENVIANDO...";
   document.querySelectorAll(".answer").forEach((b) => (b.disabled = true));
@@ -160,19 +198,116 @@ async function submitAnswer(index) {
   document.querySelector(`.answer[data-index="${index}"]`)?.classList.add(result.is_correct ? "correct" : "wrong");
   feedback.className = `feedback ${result.is_correct ? "success" : "failure"}`;
   feedback.innerHTML = `<strong>${result.is_correct ? `Acertou! +${result.points_earned} pontos` : "Não foi dessa vez!"}</strong><p>${escapeHtml(result.explanation || "Continue explorando o campus.")}</p><button class="primary-button" data-action="continue">CONTINUAR A MISSÃO →</button>`;
+  savePlayerLocally();
   updatePlayer();
   await refreshPlayer();
 }
 
 async function loadRanking() {
   showScreen("rankingScreen"); if (!ensureConfigured()) return;
-  const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").order("score", { ascending:false }).order("completed_count", { ascending:false }).order("name", { ascending:true }).limit(50);
-  if (error) return toast("Não foi possível carregar o ranking.", "error");
-  const ranking = sortLeaderboard(data);
-  const top = ranking.slice(0, 3);
-  $("podium").innerHTML = top.map((p, i) => `<article class="podium-card place-${i + 1}"><span>${i === 0 ? "🏆" : i === 1 ? "🥈" : "🥉"}</span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.school)}</small><b>${p.score} pts</b></article>`).join("");
-  $("rankingList").innerHTML = ranking.map((p, i) => `<div class="ranking-row ${p.id === state.player?.id ? "is-you" : ""}"><b>${String(i + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(p.name)}${p.id === state.player?.id ? " (você)" : ""}</strong><small>${escapeHtml(p.school)}</small></span><em>${p.score}</em></div>`).join("");
-  $("rankingEmpty").classList.toggle("hidden", ranking.length > 0);
+  try {
+    const { data, error } = await db.from("leaderboard").select("id,name,school,score,completed_count").order("score", { ascending:false }).order("completed_count", { ascending:false }).order("name", { ascending:true }).limit(50);
+    if (error) throw error;
+    const ranking = sortLeaderboard(data);
+    const top = ranking.slice(0, 3);
+    $("podium").innerHTML = top.map((p, i) => `<article class="podium-card place-${i + 1}"><span>${i === 0 ? "🏆" : i === 1 ? "🥈" : "🥉"}</span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.school)}</small><b>${p.score} pts</b></article>`).join("");
+    $("rankingList").innerHTML = ranking.map((p, i) => `<div class="ranking-row ${p.id === state.player?.id ? "is-you" : ""}"><b>${String(i + 1).padStart(2, "0")}</b><span><strong>${escapeHtml(p.name)}${p.id === state.player?.id ? " (você)" : ""}</strong><small>${escapeHtml(p.school)}</small></span><em>${p.score}</em></div>`).join("");
+    $("rankingEmpty").classList.toggle("hidden", ranking.length > 0);
+  } catch {
+    toast("Não foi possível atualizar o ranking. Tente novamente. Sua participação foi mantida.", "error");
+  }
+}
+
+
+function updateBonusUnlock() {
+  const unlocked = Number(state.player?.score) >= 1000;
+  $("bonusContinue").classList.toggle("hidden", !unlocked);
+  $("bonusHub").classList.toggle("hidden", !unlocked);
+  $("codePanel").classList.toggle("hidden", unlocked);
+  if (!unlocked || state.bonusCelebrated.has(state.player.id)) return;
+  state.bonusCelebrated.add(state.player.id);
+  const key = `upxp_bonus_celebrated_${state.player.id}`;
+  try {
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, "1");
+  } catch { /* A celebração continua funcionando nesta visita. */ }
+  const colors = ["#c8ff3d", "#6f35e8", "#171125", "#ed1c2e"];
+  $("bonusConfetti").innerHTML = Array.from({ length: 36 }, (_, i) =>
+    `<i style="--x:${(i * 29) % 100}%;--color:${colors[i % colors.length]};--delay:${(i % 7) * .12}s"></i>`).join("");
+  $("bonusModal").showModal();
+}
+
+async function startBonusRound() {
+  if (!ensureConfigured() || !state.player || state.bonusBusy) return;
+  state.bonusBusy = true;
+  $("bonusContinue").disabled = true;
+  $("bonusModal").close();
+  const requestedAt = performance.now();
+  try {
+    const { data, error } = await db.rpc("start_bonus_round", { player_uuid: state.player.id });
+    if (error) throw error;
+    if (!data) { toast("Você concluiu todas as perguntas disponíveis no modo extra. Confira sua posição no ranking!"); return; }
+    clearInterval(state.bonusTimer);
+    // Desconta a viagem da requisição: o relógio do aparelho não amplia o prazo do banco.
+    state.bonus = { id: data.round_id, deadline: requestedAt + Math.max(0, Date.parse(data.expires_at) - Date.parse(data.server_now)), finished: false };
+    state.challenge = data;
+    renderChallenge(); showScreen("challengeScreen");
+    state.bonusTimer = setInterval(tickBonusTimer, 100);
+  } catch {
+    toast("Não foi possível abrir a pergunta extra. Tente novamente.", "error");
+  } finally {
+    state.bonusBusy = false;
+    $("bonusContinue").disabled = false;
+    if (state.bonus && !state.bonus.finished) tickBonusTimer();
+  }
+}
+
+function tickBonusTimer() {
+  const round = state.bonus;
+  if (!round || round.finished) return;
+  const remaining = Math.max(0, Math.ceil((round.deadline - performance.now()) / 1000));
+  $("bonusTimer").textContent = `${remaining}s para confirmar sua resposta`;
+  $("bonusTimer").classList.toggle("urgent", remaining <= 5);
+  if (remaining === 0 && !state.bonusBusy) {
+    clearInterval(state.bonusTimer);
+    submitBonusAnswer(null);
+  }
+}
+
+async function submitBonusAnswer(index) {
+  const round = state.bonus;
+  if (!round || round.finished || state.bonusBusy) return;
+  if (performance.now() >= round.deadline) index = null;
+  if (index === undefined) return;
+  state.bonusBusy = true;
+  $("confirmAnswer").disabled = true;
+  $("confirmAnswer").textContent = "ENVIANDO...";
+  document.querySelectorAll(".answer").forEach(b => b.disabled = true);
+  try {
+    const { data, error } = await db.rpc("submit_bonus_answer", {
+      player_uuid: state.player.id, round_uuid: round.id, selected_index: index,
+    });
+    if (error || !data) throw error || new Error("Resposta vazia");
+    round.finished = true;
+    clearInterval(state.bonusTimer);
+    state.player = { ...state.player, ...data.player };
+    savePlayerLocally(); updatePlayer();
+    $("bonusTimer").textContent = data.timed_out ? "Tempo esgotado" : "Resposta registrada";
+    const feedback = $("answerFeedback");
+    feedback.className = `feedback ${data.is_correct ? "success" : "failure"}`;
+    feedback.innerHTML = `<strong>${data.timed_out ? "O tempo acabou!" : data.is_correct ? `Acertou! +${data.points_earned} pontos` : "Não foi dessa vez!"}</strong><p>${escapeHtml(data.explanation || "Continue no game e tente a próxima pergunta.")}</p><button class="primary-button" data-action="bonus-next">PRÓXIMA PERGUNTA →</button>`;
+    $("confirmAnswer").textContent = "RESPOSTA FINALIZADA";
+  } catch {
+    // Reenvio usa a mesma rodada; o banco impede pontuação duplicada.
+    clearInterval(state.bonusTimer);
+    toast("Não foi possível confirmar. Tente enviar novamente; o prazo continua contando.", "error");
+    $("confirmAnswer").disabled = false;
+    $("confirmAnswer").textContent = "TENTAR NOVAMENTE";
+    if (performance.now() < round.deadline) {
+      document.querySelectorAll(".answer").forEach(b => b.disabled = false);
+      state.bonusTimer = setInterval(tickBonusTimer, 100);
+    }
+  } finally { state.bonusBusy = false; }
 }
 
 function subscribeRanking() {
@@ -198,6 +333,8 @@ function maybeShowEndMessage() {
 document.addEventListener("click", (event) => {
   const answer = event.target.closest(".answer"); if (answer) return selectAnswer(Number(answer.dataset.index));
   const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "bonus-next") return startBonusRound();
+  if (action === "bonus-dismiss") $("bonusModal").close();
   if (action === "start") showScreen(state.player ? "gameScreen" : "registerScreen");
   if (action === "home") showScreen("welcomeScreen");
   if (action === "game" || action === "continue") { $("codeInput").value = ""; showScreen("gameScreen"); }
@@ -228,13 +365,10 @@ async function restoreSession() {
   showScreen(sessionStorage.getItem("upxp_instructions_seen") ? "gameScreen" : "instructionsScreen");
   if (!db) return;
   const result = await refreshPlayerWithRetry();
-  if (result === "missing") {
-    localStorage.removeItem("upxp_player");
-    state.player = null;
-    showScreen("welcomeScreen");
-    toast("Sua participação não foi encontrada. Entre novamente.", "error");
-  } else if (result === false) {
-    toast("Não foi possível validar sua sessão. Verifique sua conexão e tente recarregar.", "error");
+  if (result !== true) {
+    // O ranking público não é uma fonte de validação da identidade do participante.
+    // Ausência ou falha de leitura não invalida o cadastro que já foi confirmado.
+    toast("Não foi possível atualizar sua pontuação agora. Sua participação foi mantida.", "error");
   }
 }
 

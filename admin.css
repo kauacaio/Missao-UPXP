@@ -1,1 +1,205 @@
 :root{--ink:#171125;--purple:#6f35e8;--lime:#c8ff3d;--paper:#f6f3ee;--muted:#716b7b;--line:#ded8e6;--red:#ed1c2e}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}.hidden{display:none!important}.login-view{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(115deg,var(--ink) 0 58%,var(--purple) 58%)}.login-card{width:min(100%,480px);padding:46px;background:#fff;box-shadow:12px 12px 0 var(--lime)}.login-card img{width:140px}.login-card small,.dashboard header small{display:block;margin-top:28px;color:var(--purple);font-size:9px;font-weight:800;letter-spacing:.17em}.login-card h1{margin:12px 0;font:50px/.9 "Archivo Black",sans-serif;letter-spacing:-.06em}.login-card h1 em{color:var(--red);font-style:normal}.login-card p{color:var(--muted)}form{display:grid;gap:16px;margin-top:28px}label{font-size:11px;font-weight:800}input,select{width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);background:#fff;font:inherit;outline:none}input:focus,select:focus{border-color:var(--purple)}form button,#exportButton{padding:16px;border:0;background:var(--ink);color:#fff;font-weight:800;cursor:pointer}form button span{float:right}#loginMessage{min-height:18px;color:#b52c3c;font-size:11px}.dashboard{min-height:100vh;display:grid;grid-template-columns:230px 1fr}.dashboard aside{position:sticky;top:0;height:100vh;padding:28px 22px;display:flex;flex-direction:column;background:var(--ink);color:#fff}.dashboard aside>img{width:135px;padding:6px;background:#fff}.dashboard aside>div{display:grid;gap:5px;margin:35px 0}.dashboard aside small{color:var(--lime);font-size:8px;letter-spacing:.14em}.dashboard aside strong{font-size:16px}.dashboard nav button,.logout{width:100%;padding:13px;border:0;background:#ffffff12;color:#fff;text-align:left;font-weight:700}.logout{margin-top:auto;background:transparent;color:#aaa3b1;cursor:pointer}.dashboard main{min-width:0;padding:45px clamp(24px,5vw,70px)}.dashboard header{display:flex;align-items:end;justify-content:space-between}.dashboard header small{margin:0}.dashboard header h1{margin:7px 0 0;font:42px "Archivo Black",sans-serif;letter-spacing:-.05em}#exportButton{background:var(--purple)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:35px 0}.stats article{padding:22px;background:#fff;border:1px solid var(--line)}.stats span{display:block;color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.13em}.stats strong{display:block;margin-top:12px;font:32px "Archivo Black",sans-serif}.toolbar{display:grid;grid-template-columns:1fr 280px;gap:12px;margin-bottom:14px}.toolbar input,.toolbar select{margin:0}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:16px;text-align:left;border-bottom:1px solid var(--line)}th{background:var(--ink);color:#fff;font-size:8px;letter-spacing:.12em}td{font-size:12px}td strong{display:block}.badge{display:inline-block;padding:6px 8px;background:#eee9f3;font-size:9px;font-weight:800}.badge.yes{background:#e8ffab;color:#315315}.status-select{margin:0;padding:7px;font-size:11px}.empty{padding:35px;text-align:center;color:var(--muted)}.privacy-note{color:var(--muted);font-size:10px;line-height:1.5}@media(max-width:760px){.dashboard{display:block}.dashboard aside{position:static;width:100%;height:auto;display:flex;flex-direction:row;align-items:center;gap:15px;padding:12px}.dashboard aside>img{width:95px}.dashboard aside>div,.dashboard nav{display:none}.logout{width:auto;margin:0 0 0 auto}.dashboard main{padding:25px 15px}.stats{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr}.login-card{padding:32px 24px}.dashboard header{align-items:center}.dashboard header h1{font-size:31px}#exportButton{padding:12px;font-size:9px}}
+.engagement-panel{padding:24px;background:#fff;border:1px solid var(--line);margin-bottom:24px}.engagement-panel h2{margin:0 0 10px;font-size:21px}.engagement-panel p{color:var(--muted);font-size:12px;line-height:1.6}.engagement-funnel{display:grid;gap:16px;margin:22px 0}.funnel-stage>div{display:flex;justify-content:space-between;gap:12px;font-size:12px}.funnel-stage small{font-weight:400;color:var(--muted)}.funnel-stage meter{display:block;width:100%;height:24px;accent-color:var(--purple)}.engagement-note{margin-bottom:0}.participation{display:block;font-weight:800;white-space:nowrap}.participation.high{color:#a43113}.participation.medium{color:#7042ad}.participation.low{color:#316381}.participation.none,.participation.unknown{color:var(--muted)}.heat-meter{display:block;width:110px;height:16px;accent-color:var(--purple)}td small{color:var(--muted);font-size:10px}.toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:760px){.toolbar{grid-template-columns:1fr}.engagement-panel{padding:18px}}
+/* Quadro de relacionamento */
+.dashboard{grid-template-columns:190px 1fr}.dashboard main{padding:32px 28px}.dashboard header h1{font-family:Inter,sans-serif;font-size:30px;letter-spacing:-.04em}.stats{display:flex;gap:24px;margin:22px 0}.stats article{padding:0;background:none;border:0;display:flex;align-items:center;gap:8px}.stats strong{font:700 16px Inter,sans-serif;margin:0}.stats span{font-size:9px;letter-spacing:.02em}.toolbar{grid-template-columns:minmax(180px,1.5fr) repeat(3,minmax(140px,1fr));gap:8px}.toolbar input,.toolbar select{font-size:11px;padding:11px;border-radius:7px}.board-hint{font-size:11px;color:var(--muted);margin:16px 0 0}#boardMessage{font-size:12px;min-height:18px;margin:8px 0}.kanban-board{display:grid;grid-template-columns:repeat(4,minmax(245px,1fr));gap:14px;overflow-x:auto;align-items:start;padding-bottom:18px}.kanban-column{background:#edeaf0;border-radius:12px;padding:12px;min-height:360px;border-top:3px solid #a999bd}.kanban-column.contatado{border-top-color:#aa7be5}.kanban-column.convertido{border-top-color:#5c9d80}.kanban-column.descartado{border-top-color:#a4a1aa}.kanban-column h2{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin:3px 2px 16px}.kanban-column h2 b{background:#fff9;border-radius:6px;padding:4px 8px;color:var(--muted);font-size:11px}.kanban-cards{display:grid;gap:10px}.lead-card{background:white;border:1px solid #e1dce7;border-radius:9px;padding:15px;box-shadow:0 2px 3px #17112504;cursor:grab}.lead-card[aria-busy=true]{opacity:.65;cursor:wait}.lead-card h3{font-size:13px;margin:0;overflow-wrap:anywhere}.lead-phone{font-size:11px;color:var(--muted);margin:7px 0 12px}.lead-tags{display:flex;flex-wrap:wrap;gap:5px}.tag{font-size:9px;font-weight:600;border-radius:5px;padding:5px 7px;background:#f0edf4;color:#716b7b}.tag.high{background:#ffebe3;color:#a14c2a}.tag.medium{background:#eee5ff;color:#714ca3}.tag.low{background:#e7eff9;color:#466687}.tag.consent{background:#e9f5ec;color:#477452}.lead-meta{font-size:10px;color:var(--muted);margin:12px 0}.move-label{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #f2eff5;padding-top:10px;font-weight:400;font-size:10px;color:var(--muted)}.move-label select{width:auto;max-width:135px;font-size:10px;border:0;background:#f8f7fa;border-radius:5px;cursor:pointer}.column-empty{font-size:11px;color:var(--muted);text-align:center;padding:30px 5px}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--purple);outline-offset:3px}@media(max-width:1000px){.dashboard{grid-template-columns:155px 1fr}.toolbar{grid-template-columns:1fr 1fr}}@media(max-width:760px){.dashboard{display:block}.dashboard main{padding:24px 15px}.stats{gap:14px;flex-wrap:wrap}.stats article{gap:6px}.toolbar{grid-template-columns:1fr 1fr}.kanban-board{grid-template-columns:repeat(4,minmax(260px,80vw))}.dashboard header h1{font-size:25px}}
+.view-switch{display:inline-flex;gap:3px;padding:3px;background:#e9e5ee;border-radius:8px;margin-top:6px}.view-switch button{border:0;background:transparent;padding:8px 18px;border-radius:6px;font:600 12px Inter,sans-serif;color:var(--muted);cursor:pointer}.view-switch button[aria-pressed=true]{background:#fff;color:var(--purple);box-shadow:0 1px 3px #17112512}.leads-list{border-radius:10px}.leads-list th{background:#edeaf0;color:var(--muted);font-size:9px}.leads-list td{padding:14px 16px}.leads-list td small{display:block;margin-top:7px}.leads-list .status-select{border-radius:6px;background:#f8f7fa}.leads-list tr:last-child td{border-bottom:0}
+.sales-funnel{margin:20px 0}.sales-funnel>p{font-size:11px;color:var(--muted)}#salesFunnel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}#salesFunnel button{border:1px solid var(--line);border-radius:8px;background:#fff;text-align:left;padding:12px;cursor:pointer}#salesFunnel button[aria-pressed=true]{border-color:var(--purple);background:#f2eaff}#salesFunnel span{display:block;font-size:11px;color:var(--muted)}#salesFunnel strong{display:inline-block;font-size:22px;margin-top:8px}#salesFunnel small{margin-left:8px;color:var(--muted)}.contact-open{border:0;padding:0;background:none;color:var(--ink);font:700 13px Inter,sans-serif;text-align:left;cursor:pointer}.contact-open:hover{text-decoration:underline}tr[data-contact]{cursor:pointer}dialog{width:min(580px,calc(100% - 24px));max-height:90vh;border:1px solid var(--line);border-radius:14px;padding:28px;color:var(--ink)}dialog::backdrop{background:#17112580}.detail-heading{display:flex;justify-content:space-between;gap:20px}.detail-heading small{font-size:10px;color:var(--purple)}.detail-heading h2{margin:8px 0;overflow-wrap:anywhere}.detail-heading p{font-size:13px;color:var(--muted)}#closeContact{align-self:start;border:0;background:#eee9f3;border-radius:7px;font-size:25px;cursor:pointer}textarea{display:block;width:100%;resize:vertical;border:1px solid var(--line);border-radius:6px;padding:12px;font:13px Inter,sans-serif;margin-top:8px}#detailForm small{display:block;color:var(--muted);font-weight:400;margin-top:7px}#detailMessage{font-size:12px;color:var(--purple)}.comments-section{margin-top:28px;border-top:1px solid var(--line);padding-top:15px}.comments-section h3{font-size:16px}.comment{padding:12px;background:#f7f5fa;border-radius:7px;margin-top:8px}.comment small{font-size:10px;color:var(--muted)}.comment p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6;margin:8px 0 0}button:disabled{opacity:.55;cursor:wait}@media(max-width:760px){#salesFunnel{grid-template-columns:repeat(5,minmax(110px,1fr));overflow:auto}dialog{padding:20px}}
+.manage-tags{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--purple);padding:9px 13px;font:600 11px Inter,sans-serif;cursor:pointer;margin-right:10px}fieldset{border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}legend{font-size:12px;font-weight:700}.tag-picker{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.tag-choice{display:flex;align-items:center;gap:5px;padding:5px;border:1px solid var(--line);border-radius:7px;cursor:pointer}.tag-choice input{width:15px;height:15px;margin:0;accent-color:var(--purple)}.custom-tag{display:inline-flex;align-items:center;gap:6px;background:#f4f2f7;color:var(--ink)}.custom-tag i{width:8px;height:8px;background:var(--tag-color);border-radius:50%;flex-shrink:0}#tagColor{width:65px;height:42px;padding:4px}#tagMessage{font-size:12px;line-height:1.5;color:var(--purple)}#closeTags{border:0;border-radius:6px;align-self:start;background:#eee9f3;font-size:25px;cursor:pointer}
+
+/* Fichas e catálogo de etiquetas */
+dialog {
+  width: min(640px, calc(100% - 32px));
+  max-height: 90dvh;
+  padding: 0;
+  border: 1px solid #ffffffb3;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 32px 100px #17112538, 0 4px 16px #17112512;
+  overscroll-behavior: contain;
+}
+dialog[open] { animation: modal-appear .18s ease-out; }
+dialog::backdrop { background: #19142670; backdrop-filter: blur(5px); }
+dialog .detail-heading {
+  position: sticky; top: 0; z-index: 2;
+  padding: 28px 30px 22px;
+  background: #fff;
+  border-bottom: 1px solid #efecf3;
+  align-items: flex-start;
+}
+dialog .detail-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+dialog .detail-heading-main { min-width: 0; flex: 1 1 auto; }
+dialog .detail-heading-actions { display: flex; align-items: center; align-self: flex-start; gap: 24px; margin-left: auto; flex-shrink: 0; }
+dialog .detail-heading-actions #contactWhatsApp { display: flex; align-items: center; }
+dialog .detail-heading small { font-size: 9px; font-weight: 700; letter-spacing: .14em; color: #857493; }
+dialog .detail-heading h2 { font: 700 24px/1.25 Inter,sans-serif; letter-spacing: -.04em; margin: 9px 0 0; }
+dialog .detail-heading p { margin: 9px 0 0; font-size: 12px; }
+#closeContact, #closeTags { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: #f5f3f8; color: #81788d; font: 400 24px Inter,sans-serif; }
+#closeContact:hover, #closeTags:hover { background: #eee7f9; color: var(--purple); }
+#contactDialog { width: min(900px, calc(100% - 32px)); }
+.contact-workspace { display: grid; grid-template-columns: 1.1fr 1fr; }
+#detailForm { padding: 26px 30px 30px; margin: 0; gap: 22px; align-content: start; }
+dialog label, dialog legend { font-size: 12px; font-weight: 600; }
+dialog input:not([type=checkbox]):not([type=color]), dialog textarea { border: 1px solid #e7e2ed; border-radius: 10px; background: #faf9fc; padding: 12px 14px; font-size: 13px; line-height: 1.6; transition: border-color .15s, box-shadow .15s; }
+dialog textarea:focus, dialog input:focus { border-color: #ad8dec; outline: 2px solid #6f35e81a; outline-offset: 2px; background: #fff; }
+dialog textarea { min-height: 100px; }
+#tagFieldset { border: 0; border-radius: 0; padding: 0; margin: 0; }
+#tagFieldset legend { padding: 0; }
+dialog .lead-meta { font-size: 11px; line-height: 1.7; }
+.tag-choice { padding: 8px 10px; border-radius: 9px; transition: background .15s, border-color .15s; }
+.tag-choice:has(input:checked) { background: #f4eefe; border-color: #bfa5ee; }
+.tag-choice .custom-tag { padding: 0; background: transparent; font-size: 11px; }
+.tag-choice:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
+#tagPicker { max-height: 200px; overflow-y: auto; padding: 3px; margin-left: -3px; }
+dialog #createTagFromContact { background: transparent; color: var(--purple); padding: 7px 0; border: 0; font-size: 11px; font-weight: 600; }
+#saveContact, #saveTag, #addComment { border-radius: 10px; padding: 12px 18px; font: 600 12px Inter,sans-serif; background: var(--purple); color: #fff; box-shadow: 0 3px 8px #6f35e819; }
+#saveContact:hover, #saveTag:hover { background: #5e2dc7; }
+#contactDialog .comments-section { background: #faf9fc; padding: 26px 26px 30px; margin: 0; border-top: 0; border-left: 1px solid #efecf3; }
+.comments-section h3, .catalog-section h3, #tagCreateForm h3 { margin: 0 0 16px; font-size: 12px; font-weight: 700; }
+#commentHistory { max-height: 270px; overflow-y: auto; }
+.comment { background: #fff; border: 1px solid #ece8f1; border-radius: 12px; padding: 14px; margin: 0 0 10px; }
+.comment p { font-size: 12px; }
+#commentForm { gap: 12px; margin-top: 20px; }
+#addComment { background: #eee7f8; color: #65409b; box-shadow: none; }
+#addComment:hover { background: #e5daf4; }
+#detailMessage, #tagMessage { margin: 0; font-size: 12px; line-height: 1.6; }
+#detailMessage:not(:empty), #tagMessage:not(:empty) { padding: 12px 30px; background: #f5efff; border-bottom: 1px solid #eee5fb; }
+#tagsDialog > .lead-meta { margin: 20px 30px; }
+.catalog-section { padding: 0 30px 18px; }
+#tagCatalog { max-height: 190px; overflow-y: auto; }
+#tagCatalog .custom-tag { border: 1px solid #e9e4ef; background: white; border-radius: 8px; font-size: 11px; padding: 8px 11px; }
+#tagCreateForm { margin: 0; padding: 24px 30px 30px; background: #faf9fc; border-top: 1px solid #efecf3; grid-template-columns: 1fr 70px; gap: 16px; }
+#tagCreateForm h3, #saveTag { grid-column: 1 / -1; }
+#tagCreateForm h3 { margin: 0; }
+#tagColor { width: 100%; height: 47px; border-radius: 10px; border-color: #e7e2ed; background: #fff; cursor: pointer; }
+@keyframes modal-appear { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 640px) {
+  #contactDialog .detail-heading { flex-wrap: wrap; }
+  #contactDialog .detail-heading-actions { gap: 20px; }
+  dialog, #contactDialog { width: calc(100% - 20px); max-height: 94dvh; border-radius: 16px; }
+  dialog .detail-heading { padding: 20px; }
+  dialog .detail-heading h2 { font-size: 21px; }
+  .contact-workspace { grid-template-columns: 1fr; }
+  #detailForm, #contactDialog .comments-section { padding: 22px 20px; }
+  #contactDialog .comments-section { border-left: 0; border-top: 1px solid #efecf3; }
+  #tagsDialog > .lead-meta { margin: 20px; }
+  .catalog-section { padding: 0 20px 16px; }
+  #tagCreateForm { padding: 22px 20px; }
+}
+@media (prefers-reduced-motion: reduce) { dialog[open] { animation: none; } }
+
+/* Vue principale compacte */
+.dashboard main{background:#fafafa;padding:32px clamp(18px,3vw,48px)}
+.dashboard header h1{font-size:26px;font-weight:650;letter-spacing:-.035em}
+.dashboard header small{color:#8b8495;font-size:9px;letter-spacing:.1em}
+#exportButton{background:#fff;color:#625b6c;border:1px solid #e5e2e9;border-radius:7px;padding:10px 14px;font-size:10px}
+.stats{gap:20px;margin:15px 0 24px}.stats span{color:#88818f;font-weight:500}.stats strong{font-size:12px;color:#625b6c}
+.stats article:last-child{display:none}
+.sales-funnel{margin:0 0 20px;border-bottom:1px solid #e7e4eb}.sales-funnel>p{display:none}
+#salesFunnel{display:flex;gap:22px;overflow-x:auto}
+#salesFunnel button{display:flex;align-items:center;gap:8px;flex-shrink:0;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:12px 0;margin-bottom:0}
+#salesFunnel button[aria-pressed=true]{border-color:var(--purple);background:transparent}
+#salesFunnel span{font-size:12px;color:#777080}
+#salesFunnel button[aria-pressed=true] span{color:var(--purple);font-weight:600}
+#salesFunnel strong{margin:0;font-size:10px;font-weight:500;padding:3px 6px;border-radius:5px;background:#efedf2;color:#777080}
+.crm-controls{display:flex;align-items:center;gap:10px;position:relative;margin:0 0 18px}
+.crm-controls>input{width:min(340px,100%);margin:0 auto 0 0;background:#fff;border:1px solid #e6e3ea;border-radius:7px;padding:10px 12px;font-size:12px}
+.crm-controls .view-switch{margin:0;background:#eeecf1;padding:3px;flex-shrink:0}
+.crm-controls .view-switch button{font-size:11px;padding:7px 12px}
+.crm-controls .manage-tags{margin:0;font-weight:500;color:#716979;white-space:nowrap;padding:10px 12px}
+.extra-filters summary{cursor:pointer;font-size:11px;color:#716979;padding:10px 12px;list-style:none;border:1px solid #e6e3ea;border-radius:7px;background:#fff;white-space:nowrap}
+.extra-filters summary::-webkit-details-marker{display:none}
+.extra-filters[open] summary{color:var(--purple);border-color:#bca5e6}
+.filter-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:5;width:min(300px,100%);padding:18px;border:1px solid #e6e3ea;border-radius:10px;background:white;box-shadow:0 12px 32px #17112512;display:grid;gap:14px}
+.filter-panel label{font-size:11px;color:#716979;font-weight:500}.filter-panel select{font-size:12px;border-radius:6px;padding:10px}
+#boardMessage:empty{display:none}#boardMessage:not(:empty){margin:8px 0 14px}
+.leads-list{border:1px solid #e8e5ed;border-radius:9px}
+.leads-list table{min-width:700px}.leads-list th{background:#f7f6f8;color:#938a9d;font-size:9px;letter-spacing:.04em;font-weight:500;padding:12px 18px;border-bottom:1px solid #eeeaf2}
+.leads-list td{padding:13px 18px;border-bottom:1px solid #f1eef5;font-size:11px}
+.leads-list tr:hover{background:#fcfbfe}.leads-list .contact-open{font-size:12px;font-weight:600}
+.leads-list td small{font-size:10px;color:#958c9e;margin-top:5px}.leads-list .lead-tags{margin-top:5px}.leads-list .lead-tags:empty{display:none}
+.leads-list .tag{background:transparent;color:#82758e;font-size:10px;font-weight:400;padding:0}
+.leads-list .tag.consent{color:#64816d}.leads-list .custom-tag{padding:2px 5px;background:#f5f3f8;border-radius:4px;font-size:9px}
+.leads-list .status-select{width:auto;min-width:110px;border:1px solid transparent;background:transparent;font-size:11px;color:#756b80;padding:6px;cursor:pointer}
+.leads-list .status-select:hover,.leads-list .status-select:focus{border-color:#e3dbea;background:#faf8fc}
+.leads-list td:last-child{color:#958c9e;font-size:10px}.privacy-note{margin-top:16px;color:#99919f}
+@media(max-width:640px){.crm-controls{flex-wrap:wrap;gap:8px}.crm-controls>input{width:100%;flex-basis:100%}.crm-controls .view-switch{margin-right:auto}#salesFunnel{gap:18px}.dashboard main{padding:24px 15px}.dashboard header h1{font-size:24px}.stats{gap:15px}}
+
+/* Hierarquia das informações na lista */
+.leads-list th{color:#665c74;font-weight:650;background:#f3f1f6}
+.leads-list .contact-open{font-size:13px;font-weight:700;color:#241a33}
+.leads-list td small{color:#706579;font-size:11px}
+.leads-list td:nth-child(4)>small{color:#51445f;font-weight:600;margin-top:7px}
+.leads-list .tag{display:inline-flex;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:600;line-height:1.3;background:#f0edf4;color:#65596f}
+.leads-list .tag.high{background:#fff0e5;color:#974016}
+.leads-list .tag.medium{background:#eee5ff;color:#6535a0}
+.leads-list .tag.low{background:#e8f0fc;color:#345e8d}
+.leads-list .tag.none,.leads-list .tag.unknown{background:#f2f0f4;color:#73697d}
+.leads-list .tag.consent{background:#eaf5ee;color:#326849}
+.leads-list .tag.neutral{background:#f3f1f5;color:#74677f;font-weight:500}
+.leads-list .custom-tag{background:#f3eefb;color:#574267;font-size:10px;padding:3px 6px}
+.leads-list .status-select{background:#f3f0f8;border:1px solid #e3dceb;color:#534065;font-weight:600;border-radius:6px;padding:7px 9px}
+.leads-list .status-select:hover,.leads-list .status-select:focus{background:#ece4f8;border-color:#bfa8dc}
+.leads-list td:last-child{color:#786d82;font-size:11px}
+.leads-list tr:hover{background:#faf7ff}
+.whatsapp-button{display:inline-flex;align-items:center;gap:5px;margin:7px 0;padding:5px 8px;border:1px solid #cde5d6;border-radius:6px;background:#eef8f1;color:#236943;font:600 10px Inter,sans-serif;text-decoration:none;white-space:nowrap}.whatsapp-button:hover{background:#def1e5;border-color:#8ac3a0}.whatsapp-button:focus-visible{outline:2px solid #236943;outline-offset:3px}.lead-card .whatsapp-button{margin:0 0 10px}#contactWhatsApp .whatsapp-button{font-size:12px;padding:8px 12px;margin:0}
+
+.leads-list .contact-name-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.leads-list .contact-name-row .whatsapp-button{margin:0;flex-shrink:0}
+.leads-list .contact-tags-cell{min-width:150px;max-width:260px}
+.leads-list .contact-tags-cell .lead-tags{margin:0;gap:5px}
+.leads-list .contact-tags-cell .custom-tag{overflow-wrap:anywhere;white-space:normal}
+.leads-list .registration-date{color:#786d82;font-size:11px;white-space:nowrap}
+.leads-list .no-tags{color:#a297ac}
+.leads-list table{min-width:850px}
+
+.dashboard nav a{display:block;padding:12px;margin-bottom:5px;border-radius:7px;color:#c5bed0;text-decoration:none;font-size:12px;font-weight:600}.dashboard nav a.active{background:#ffffff14;color:#fff}.dashboard nav a:hover{background:#ffffff0c}.funnel-intro{font-size:13px;line-height:1.7;color:var(--muted);max-width:650px;margin:20px 0}.funnel-page .sales-funnel{padding:24px;background:#fff;border:1px solid #e7e4eb;border-radius:12px;margin:20px 0 30px}.funnel-page .sales-funnel>p{display:block;margin:0 0 20px;font-size:11px;color:var(--muted)}.funnel-page #salesFunnel{display:grid;gap:10px;overflow:visible}.funnel-page #salesFunnel button{display:grid;grid-template-columns:130px 50px 1fr;gap:8px 16px;margin:0;padding:14px 18px;border:1px solid #ece7f2;border-radius:8px;background:#faf9fc;text-align:left}.funnel-page #salesFunnel button[aria-pressed=true]{border-color:#b79bdd;background:#f5efff}.funnel-page #salesFunnel span{font-weight:600;align-self:center}.funnel-page #salesFunnel strong{background:none;padding:0;font-size:22px;font-weight:700;color:var(--ink)}.funnel-page #salesFunnel small{align-self:center;text-align:right;color:var(--muted);font-size:11px}.funnel-page #salesFunnel meter{grid-column:1/-1;width:100%;height:14px;accent-color:var(--purple)}.funnel-page #salesFunnel meter::-webkit-meter-bar{background:#eae5f0;border:0;border-radius:8px}.funnel-page #salesFunnel meter::-webkit-meter-optimum-value{background:#9064ce;border-radius:8px}.funnel-page #salesFunnel meter::-moz-meter-bar{background:#9064ce;border-radius:8px}.funnel-contacts-title{font-size:16px;margin:0 0 18px}@media(max-width:760px){.dashboard nav{display:flex;gap:4px}.dashboard nav a{margin:0;padding:8px;font-size:10px}.funnel-page .sales-funnel{padding:16px}.funnel-page #salesFunnel button{grid-template-columns:1fr auto auto;gap:8px;padding:12px}.funnel-page #salesFunnel span{font-size:11px}}
+
+/* Funil visual de relacionamento */
+.funnel-page .stats{display:none}.funnel-page .funnel-intro{margin:12px 0 24px}.funnel-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}.funnel-metrics article{background:white;border:1px solid #e9e5ee;border-radius:12px;padding:20px 24px}.funnel-metrics span{font-size:11px;color:#7b7086}.funnel-metrics strong{display:block;margin-top:10px;font-size:30px;letter-spacing:-.05em;color:#322342}.funnel-metrics article:last-child{background:#f1ebfa;border-color:#e3d7f3}.funnel-metrics article:last-child strong{color:#7548ac}.funnel-page .professional-funnel{padding:28px 32px;border-radius:16px;box-shadow:0 4px 18px #21132f04}.funnel-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}.funnel-heading small{font-size:9px;letter-spacing:.12em;color:#9a89a9;font-weight:600}.funnel-heading h2{font-size:20px;letter-spacing:-.035em;margin:7px 0 0}.funnel-period{font-size:10px;padding:7px 10px;background:#f4f1f7;border-radius:6px;color:#887995}.funnel-layout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:40px;align-items:start}.funnel-page #salesFunnel{gap:9px;display:grid;padding:0 6px}.funnel-page #salesFunnel .funnel-segment{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:112px;margin:0 auto;width:100%;padding:20px 12%;border:0;border-radius:0;background:transparent;color:white}.funnel-segment:before{content:"";position:absolute;inset:0;z-index:-1;clip-path:polygon(0 0,100% 0,91% 100%,9% 100%);background:linear-gradient(110deg,#9472cd,#7950b7)}.funnel-page #salesFunnel .segment-contatado{width:82%}.segment-contatado:before{background:linear-gradient(110deg,#7952b2,#5f3d98)}.funnel-page #salesFunnel .segment-convertido{width:64%;padding-left:9%;padding-right:9%}.segment-convertido:before{background:linear-gradient(110deg,#53407d,#382858)}.funnel-page #salesFunnel .funnel-segment[aria-pressed=true]{background:transparent;filter:drop-shadow(0 4px 7px #50307140)}.funnel-segment[aria-pressed=true]:after{content:"";position:absolute;bottom:12px;left:50%;width:20px;height:3px;border-radius:3px;background:#fff;transform:translateX(-50%)}.funnel-page #salesFunnel .funnel-segment span{color:#fff}.funnel-page #salesFunnel .segment-step{font-size:10px;opacity:.65;position:absolute;left:10%;top:14px}.funnel-page #salesFunnel .segment-title{font-size:14px;font-weight:650}.funnel-page #salesFunnel .segment-title small{display:block;text-align:left;font-size:10px;color:#eee5fc;margin-top:7px;font-weight:400}.funnel-page #salesFunnel .segment-value{white-space:nowrap;text-align:right}.funnel-page #salesFunnel .segment-value strong{display:block;font-size:30px;line-height:1;color:white;letter-spacing:-.04em}.funnel-page #salesFunnel .segment-value small{display:block;font-size:9px;color:#eee5fc;margin-top:7px}.funnel-footnote{color:#95889f;font-size:10px;line-height:1.6;margin:20px 0 0;text-align:center}.funnel-insights{border-left:1px solid #eee9f3;padding-left:26px}.funnel-insights h3{font-size:12px;margin:0 0 25px}.insight-number strong{font-size:38px;letter-spacing:-.06em;color:#624183;display:block}.insight-number span{display:block;font-size:12px;line-height:1.6;color:#80708e;max-width:150px}.funnel-insights p{font-size:11px;line-height:1.8;color:#92849e;margin:22px 0}.funnel-secondary{display:grid;gap:8px;margin-bottom:20px}.funnel-secondary button{display:flex;justify-content:space-between;padding:12px;border:1px solid #e8e1ef;border-radius:7px;background:#fff;color:#72607f;font-size:11px;cursor:pointer}.funnel-secondary button[aria-pressed=true]{background:#f2ebfa;border-color:#c6b0df}.funnel-insights>small{font-size:10px;line-height:1.7;color:#9c8da8;display:block}@media(max-width:1100px){.funnel-layout{grid-template-columns:1fr;gap:25px}.funnel-insights{border-left:0;border-top:1px solid #eee9f3;padding:22px 0 0}.funnel-insights h3{margin-bottom:10px}.funnel-secondary{grid-template-columns:1fr 1fr}.insight-number span{max-width:none}.funnel-metrics article{padding:16px}}@media(max-width:640px){.funnel-metrics{grid-template-columns:1fr 1fr;gap:10px}.funnel-metrics strong{font-size:26px}.funnel-page .professional-funnel{padding:20px 12px}.funnel-page #salesFunnel .funnel-segment{min-height:100px;gap:8px}.funnel-page #salesFunnel .segment-title{font-size:11px}.funnel-page #salesFunnel .segment-title small{font-size:8px}.funnel-page #salesFunnel .segment-value strong{font-size:25px}.funnel-page #salesFunnel .segment-value small{font-size:8px}.funnel-heading{padding:0 6px}.funnel-heading h2{font-size:18px}}
+
+/* Funil vertical: substitui a grade de abas da lista de contatos. */
+.funnel-page .funnel-layout{grid-template-columns:minmax(0,1fr) 250px;gap:32px;align-items:center}
+.funnel-page #salesFunnel{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:650px;margin:0 auto;padding:0;overflow:visible}
+.funnel-page #salesFunnel .funnel-segment{box-sizing:border-box;flex:none;display:flex;width:100%;min-height:112px;margin:0;padding:22px 15%;gap:16px;text-align:left}
+.funnel-page #salesFunnel .segment-contatado{width:82%;padding:22px 12%}
+.funnel-page #salesFunnel .segment-convertido{width:64%;padding:22px 8%}
+.funnel-page .funnel-segment:before{clip-path:polygon(0 0,100% 0,91% 100%,9% 100%)}
+.funnel-page #salesFunnel .segment-step{left:12%;top:12px;font-size:9px}
+.funnel-page #salesFunnel .segment-title{min-width:0;font-size:15px;line-height:1.3}
+.funnel-page #salesFunnel .segment-title small{font-size:10px;line-height:1.4}
+.funnel-page #salesFunnel .segment-value{flex-shrink:0;white-space:nowrap}
+.funnel-page #salesFunnel .segment-value strong{font-size:32px;line-height:1.1}
+.funnel-page #salesFunnel .segment-value small{font-size:10px;margin-top:5px}
+.funnel-page #salesFunnel .funnel-segment[aria-pressed=true]{filter:none}
+.funnel-page #salesFunnel .funnel-segment:hover:before{filter:brightness(1.07)}
+.funnel-page #salesFunnel .funnel-segment:focus-visible{outline:2px solid #6f35e8;outline-offset:3px}
+.funnel-page .funnel-footnote{max-width:490px;margin:18px auto 0;font-size:10px;color:#82768d}
+.funnel-page .funnel-insights{align-self:stretch;display:flex;flex-direction:column;justify-content:center;padding-left:28px}
+.funnel-page .professional-funnel{max-width:1160px;margin-left:auto;margin-right:auto}
+.funnel-page .funnel-insights p{margin:18px 0}
+@media(max-width:1000px){.funnel-page .funnel-layout{grid-template-columns:1fr}.funnel-page .funnel-insights{border-left:0;border-top:1px solid #eee9f3;padding:22px 0 0}.funnel-page #salesFunnel{max-width:580px}}
+@media(max-width:640px){.funnel-page #salesFunnel .funnel-segment{min-height:105px;padding:24px 13%;gap:8px}.funnel-page #salesFunnel .segment-contatado{padding:24px 10%}.funnel-page #salesFunnel .segment-convertido{padding:24px 7%}.funnel-page #salesFunnel .segment-title{font-size:12px}.funnel-page #salesFunnel .segment-title small{font-size:9px}.funnel-page #salesFunnel .segment-value strong{font-size:26px}.funnel-page #salesFunnel .segment-value small{font-size:8px}.funnel-page #salesFunnel .segment-step{top:9px}}
+
+.lead-thermometer{display:flex;align-items:center;gap:24px;padding:22px 30px;border-bottom:1px solid #efecf3;background:#fcfbfe}
+.thermometer-visual{position:relative;width:42px;height:118px;flex:none}
+.thermometer-stem{position:absolute;left:11px;top:0;width:20px;height:96px;border:2px solid #d8d1e2;border-radius:14px 14px 0 0;background:#eeeaf3;overflow:hidden}
+.thermometer-liquid{position:absolute;bottom:0;left:3px;right:3px;height:0%;max-height:96px;background:var(--temperature-color,#8b8495);border-radius:7px 7px 0 0;transform-origin:bottom;animation:thermometer-rise 1.1s cubic-bezier(.22,.7,.3,1) both}
+.thermometer-ticks{position:absolute;inset:12px 0 10px 10px;background:repeating-linear-gradient(to top,transparent 0 14px,#ffffffa6 14px 16px)}
+.thermometer-bulb{position:absolute;bottom:0;left:3px;width:36px;height:36px;background:var(--temperature-color,#8b8495);border:5px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #d8d1e2}
+.temperature-copy{min-width:0}.temperature-copy>small{font-size:9px;font-weight:650;letter-spacing:.1em;color:#8b8097}.temperature-copy>strong{display:block;font-size:21px;letter-spacing:-.03em;margin:5px 0}.temperature-copy p{font-size:12px;line-height:1.6;color:#786d84;margin:4px 0}.temperature-copy details{margin-top:8px}.temperature-copy summary{cursor:pointer;font-size:10px;color:#867493}.temperature-copy details p{font-size:10px;max-width:520px}
+@keyframes thermometer-rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.thermometer-liquid{animation:none}}
+@media(max-width:640px){.lead-thermometer{padding:20px;gap:18px}.temperature-copy>strong{font-size:19px}}
+#contactDialog{width:min(650px,calc(100% - 32px))}.contact-workspace{grid-template-columns:1fr}.tag-temperature-field{grid-column:1/-1}.tag-temperature-field small{display:block;margin-top:8px;color:var(--muted);font-size:11px;font-weight:400;line-height:1.6}.tag-points{font-size:9px;opacity:.75;margin-left:4px}.tag.custom-tag{gap:6px}
+
+#contactDialog{width:min(960px,calc(100% - 32px))}
+#contactDialog .contact-workspace{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.15fr)}
+#contactDialog .lead-thermometer{flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;gap:22px;padding:36px 28px;border-bottom:0;border-right:1px solid #efecf3;background:#faf8fd}
+#contactDialog .thermometer-visual{margin:12px 0;transform:scale(1.2)}
+#contactDialog .temperature-copy p{line-height:1.8}
+#contactDialog #detailForm{min-width:0}
+@media(max-width:700px){#contactDialog .contact-workspace{grid-template-columns:1fr}#contactDialog .lead-thermometer{flex-direction:row;text-align:left;padding:24px;gap:22px;border-right:0;border-bottom:1px solid #efecf3}#contactDialog .thermometer-visual{transform:none;margin:0}}

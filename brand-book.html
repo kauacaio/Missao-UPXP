@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Missão UPXP 2026 — Guia de Identidade Visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#171125; --deep:#25134f; --purple:#6f35e8; --lime:#c8ff3d;
+    --red:#ed1c2e; --paper:#f6f3ee; --white:#fff; --muted:#716b7b; --line:#ded8e6;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{margin:0;background:var(--ink);color:var(--ink);font-family:Inter,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{width:210mm;height:297mm;padding:16mm 15mm;overflow:hidden;position:relative;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+  .p-dark{background:var(--ink);color:#fff}
+  .p-light{background:var(--paper)}
+  h1,h2,h3,h4{font-family:"Archivo Black",sans-serif;margin:0}
+  p{margin:0}
+  @page{size:A4;margin:0}
+
+  /* Capa */
+  .cover{display:flex;flex-direction:column;justify-content:space-between}
+  .cover::after{content:"UPXP";position:absolute;left:-.03em;bottom:-.12em;color:#ffffff0a;font:800px/.9 "Archivo Black",sans-serif;letter-spacing:-.09em;z-index:0}
+  .cover .noise{position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+  .cover-content{position:relative;z-index:2}
+  .cover .kicker{display:flex;align-items:center;gap:10px;color:var(--lime);font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+  .cover .kicker i{width:34px;height:3px;background:var(--lime)}
+  .cover h1{font-size:88px;line-height:.92;letter-spacing:-.06em;margin:8mm 0}
+  .cover h1 .upxp{color:var(--purple)}
+  .cover .claim{font-size:19px;color:#c9c4d0;max-width:150mm;line-height:1.6}
+  .cover .meta{display:flex;align-items:center;gap:8mm;margin-top:16mm}
+  .chip{display:grid;place-items:center;width:44px;height:44px;background:var(--ink);border:2px solid var(--lime);color:var(--lime);font:20px/1 "Archivo Black";border-radius:4px;transform:rotate(-5deg)}
+  .cover-logo{display:flex;align-items:center;justify-content:flex-end;position:relative;z-index:2}
+  .cover-logo img{width:44mm;background:#fff;padding:4mm}
+
+  /* Cabeçalho de seção */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:3px solid var(--deep);padding-bottom:5mm;margin-bottom:10mm}
+  .sec-head .num{font:42px/1 "Archivo Black";color:var(--line);letter-spacing:-.05em}
+  .sec-head h2{font-size:34px;letter-spacing:-.04em}
+  .sec-head h2 em{font-style:normal;color:var(--purple)}
+  .lead{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:9mm;max-width:165mm}
+
+  /* Cards gerais */
+  .card{background:#fff;border:1px solid var(--line);padding:7mm;border-radius:4px}
+  .label{font-size:8px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--purple);margin-bottom:4mm}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6mm}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm}
+
+  /* Marca */
+  .lockup{display:flex;align-items:center;gap:6mm}
+  .lockup span.sep{width:1px;height:22mm;background:var(--line)}
+  .lockup .wordmark{font-size:22px;font-weight:800;letter-spacing:.08em}
+  .lockup .wordmark b{color:var(--purple)}
+  .logo-plate{display:grid;place-items:center;background:#fff;border:1px solid var(--line);padding:12mm;border-radius:4px}
+  .logo-plate img{width:70mm;object-fit:contain}
+  .logo-plate.dark{background:var(--ink)}
+  .dont-line{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6mm;margin-top:6mm}
+  .bad-mock{display:grid;place-items:center;background:#fff;border:1px dashed #c9b8d6;height:52mm;color:var(--muted);font-size:10px;text-align:center;padding:4mm;position:relative}
+  .bad-mock img,.bad-mock .wordmark{opacity:1}
+  .bad-mock:nth-child(1) img{transform:rotate(-12deg)}
+  .bad-mock:nth-child(2) .wordmark{color:var(--red)}
+  .bad-mock:nth-child(3) img{opacity:.25}
+  .bad-note{position:absolute;bottom:3mm;left:0;right:0;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+
+  /* Paleta */
+  .swatch{border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+  .swatch .chip-color{height:26mm;position:relative}
+  .swatch .chip-color b{position:absolute;bottom:2mm;left:3mm;font-size:9px;color:#fff;mix-blend-mode:difference;letter-spacing:.06em}
+  .swatch .info{padding:4mm;background:#fff}
+  .swatch .info strong{display:block;font-size:12px}
+  .swatch .info span{display:block;font-size:10px;color:var(--muted);font-family:ui-monospace,monospace}
+  .swatch .info small{font-size:9px;color:var(--muted);line-height:1.5;display:block;margin-top:2mm}
+  .usage{display:grid;grid-template-columns:1fr 1fr;gap:7mm;margin-top:9mm}
+  .usage .combo{border-radius:4px;padding:7mm;min-height:34mm}
+  .combo .tag{font-size:8px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5mm;opacity:.9}
+  .combo strong{font:24px/1.15 "Archivo Black";letter-spacing:-.03em}
+  .combo p{font-size:11px;line-height:1.5;margin-top:4mm;opacity:.85}
+  .rules{margin-top:7mm;display:grid;gap:3mm}
+  .rule{display:flex;gap:4mm;align-items:flex-start;background:#fff;padding:4mm 5mm;border-left:3px solid var(--purple);font-size:11px;line-height:1.55}
+  .rule i{font-style:normal;color:var(--purple);font-weight:800;font-size:16px}
+
+  /* Tipografia */
+  .type-spec{background:#fff;border:1px solid var(--line);border-radius:4px;padding:8mm}
+  .type-spec .display{font-family:"Archivo Black";font-size:60px;line-height:.98;letter-spacing:-.05em}
+  .type-spec .display em{font-style:normal;color:var(--purple)}
+  .type-body{font-size:15px;line-height:1.6}
+  .hierarchy{display:grid;gap:6mm;margin-top:7mm}
+  .h-row{display:grid;grid-template-columns:52mm 1fr;align-items:baseline;gap:8mm;border-bottom:1px solid var(--line);padding:4mm 0}
+  .h-row .spec{font-size:9px;color:var(--muted);font-family:ui-monospace,monospace}
+  .h-row .sample{font-weight:800;line-height:1}
+  .h-row .sample i{font-style:normal;color:var(--purple)}
+
+  /* Tom de voz */
+  .voice{display:grid;grid-template-columns:1fr 1fr;gap:7mm}
+  .voice .card strong{font:26px/1.1 "Archivo Black";letter-spacing:-.03em;display:block;margin-bottom:4mm}
+  .voice .card p{font-size:11px;color:var(--muted);line-height:1.55}
+  .wordlist{display:flex;flex-wrap:wrap;gap:3mm;margin-top:8mm}
+  .word{background:var(--ink);color:var(--lime);padding:3mm 5mm;font-size:10px;font-weight:800;letter-spacing:.12em}
+  .word.alt{background:var(--purple);color:#fff}
+
+  /* Elementos */
+  .el{display:grid;grid-template-columns:1fr 1fr;gap:7mm}
+  .elem-card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:7mm}
+  .elem-card .stage{min-height:34mm;display:grid;place-items:center;position:relative;border-radius:3px;margin-bottom:5mm}
+  .btn-demo{background:var(--ink);color:#fff;font:13px/1 "Inter";font-weight:800;letter-spacing:.06em;padding:5mm 8mm;border:0;cursor:pointer;display:flex;gap:4mm;align-items:center}
+  .btn-demo span{color:var(--lime)}
+  .btn-demo.red{background:var(--red);box-shadow:5px 5px 0 var(--lime)}
+  .shadow-demo{background:#fff;box-shadow:10px 10px 0 var(--lime);padding:6mm;font-size:11px;font-weight:800;letter-spacing:.06em}
+  .qr-demo{background:#fff;box-shadow:8px 8px 0 var(--lime);padding:4mm;display:grid;place-items:center;text-align:center}
+  .qr-demo img{width:30mm;image-rendering:pixelated}
+  .qr-demo strong{font-size:8px;letter-spacing:.12em;margin-top:2mm}
+  .live-demo{display:flex;align-items:center;gap:3mm;background:var(--ink);color:#fff;padding:4mm 6mm;font-size:10px;letter-spacing:.14em;font-weight:800}
+  .live-demo i{width:8px;height:8px;border-radius:50%;background:#45da76}
+  .stage.dark{background:var(--ink)}
+
+  /* Aplicações */
+  .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:7mm}
+  .app-mock{background:#fff;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .mock-bar{padding:5mm;background:var(--ink);color:var(--lime);font-size:9px;font-weight:800;letter-spacing:.14em;display:flex;align-items:center;gap:4mm}
+  .mock-bar i{width:26px;height:3px;background:var(--lime)}
+  .mock-body{padding:7mm}
+  .mock-body .code{margin:4mm 0;display:flex;align-items:center;gap:3mm;font-size:18px;font-weight:800}
+  .mock-body .code b{background:var(--lime);color:var(--ink);padding:2mm 4mm;border-radius:2px}
+  .mock-body .pts{font-size:10px;font-weight:800;color:var(--purple);letter-spacing:.1em}
+  .rank-row{display:grid;grid-template-columns:10mm 1fr 16mm;gap:3mm;align-items:center;padding:3.5mm;border-bottom:1px solid var(--line);font-size:12px}
+  .rank-row.is-you{background:#f4efff}
+  .rank-row b{font-family:"Archivo Black";font-size:13px}
+  .rank-row em{font-weight:800;text-align:right;color:var(--purple)}
+  .podium-demo{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:3mm;margin:5mm 0}
+  .pod{text-align:center;background:var(--deep);color:#fff;border-radius:4px 4px 0 0;padding:5mm 2mm;font-size:10px}
+  .pod.big{background:var(--purple);height:52mm}
+  .pod.mid{height:42mm}
+  .pod.third{height:34mm}
+  .pod em{display:block;font-style:normal;font:16px/1 "Archivo Black";letter-spacing:-.02em;margin-bottom:2mm}
+
+  .footer-note{position:absolute;bottom:10mm;left:15mm;right:15mm;border-top:1px solid #ffffff2b;padding-top:3mm;color:#8d8499;font-size:8px;letter-spacing:.12em;text-transform:uppercase;display:flex;justify-content:space-between}
+  .footer-note.light{border-top-color:var(--line);color:var(--muted)}
+</style>
+</head>
+<body>
+
+  <!-- ============ CAPA ============ -->
+  <section class="page cover">
+    <div class="noise"></div>
+    <div class="cover-content">
+      <div class="kicker"><i></i> Guia de Identidade Visual · 2026</div>
+      <h1>MISSÃO<br /><span class="upxp">UPXP</span></h1>
+      <p class="claim">O campus é o seu jogo. Marca, cor, tipografia e regras de aplicação do jogo de exploração da UNIPAR — experiência gamificada que transforma a visita em uma competição leve e memorável.</p>
+      <div class="meta">
+        <div>
+          <div class="chip">UP</div>
+        </div>
+        <div style="font-size:11px;color:#c9c4d0;line-height:1.7">
+          BN — Universidade Paranaense<br />
+          Materiais de divulgação · Ranking ao vivo · Desafios de gestão
+        </div>
+      </div>
+    </div>
+    <div class="cover-logo"><img src="assets/unipar-logo-horizontal.png" alt="UNIPAR" /></div>
+    <div class="footer-note"><span>Missão UPXP 2026</span><span>Identidade Visual</span></div>
+  </section>
+
+  <!-- ============ 01 MARCA ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>01 — A <em>marca</em></h2></div><div class="num">01</div></div>
+    <p class="lead">A comunicação une a UNIPAR (lo­go institucional, fonte, tinta e vermelho institucional) à linguagem de jogo da Missão UPXP (roxo vibrante, lime ácido e formas geométricas). UNIPAR é a autoridade; UPXP é a experiência.</p>
+
+    <div class="card">
+      <div class="label">Construção do letreiro</div>
+      <div class="lockup">
+        <img class="unipar-logo" src="assets/unipar-logo-horizontal.png" alt="UNIPAR" style="width:56mm;object-fit:contain;background:#fff;padding:3mm;border:1px solid var(--line)" />
+        <span class="sep"></span>
+        <div class="wordmark">MISSÃO <b>UPXP</b></div>
+        <span class="sep"></span>
+        <div class="chip">UP</div>
+      </div>
+      <div class="grid3" style="margin-top:8mm">
+        <div>
+          <div class="label">Unidades da marca</div>
+          <p style="font-size:11px;line-height:1.6;color:var(--muted)">
+            <b style="color:var(--ink)">Padrão completo:</b> logo UNIPAR + divisor 1px + letreiro "MISSÃO UPXP".<br />
+            <b style="color:var(--ink)">Símbolo (chip):</b> quadrado 37–44px, fundo tinta, texto lime, giro -5°, cantos 3px.<br />
+            <b style="color:var(--ink)">Reforço do jogo:</b> "UPXP" sempre em roxo #6f35e8.
+          </p>
+        </div>
+        <div>
+          <div class="label">Área de segurança</div>
+          <p style="font-size:11px;line-height:1.6;color:var(--muted)">
+            Mantenha um respiro igual à altura do "M" ao redor do letreiro e 1× a altura do logo ao redor da combinação.<br />
+            Fundos claros: usar tinta e roxo. Fundos escuros: usar lime como acento.
+          </p>
+        </div>
+        <div>
+          <div class="label">Tipografia de marca</div>
+          <p style="font-size:11px;line-height:1.6;color:var(--muted)">
+            Letreiro em <b style="color:var(--ink)">Archivo Black</b>, letter-spacing +0.08em, "MISSÃO" em tinta #171125 e "UPXP" em roxo #6f35e8. Nunca desenhe a marca à mão.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dont-line">
+      <div class="bad-mock"><img src="assets/unipar-logo-horizontal.png" style="width:34mm" /><span class="bad-note">✕ Não gire</span></div>
+      <div class="bad-mock"><div class="wordmark">MISSÃO <span class="b" style="color:var(--red)">UPXP</span></div><span class="bad-note">✕ Não troque as cores</span></div>
+      <div class="bad-mock"><img src="assets/unipar-logo-horizontal.png" style="width:34mm;opacity:.25" /><span class="bad-note">✕ Não reduza a opacidade</span></div>
+    </div>
+
+    <div class="footer-note light"><span>01 — Marca</span><span>Missão UPXP 2026</span></div>
+  </section>
+
+  <!-- ============ 02 PALETA ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>02 — Paleta de <em>cores</em></h2></div><div class="num">02</div></div>
+    <p class="lead">Paleta de alto contraste: fundo tinta/paper neutro, um roxo vibrante para a marca do jogo, um lime "ácido" para energia e o vermelho institucional da UNIPAR reservado para ações de destaque.</p>
+
+    <div class="grid4">
+      <div class="swatch"><div class="chip-color" style="background:#171125"><b>#171125</b></div><div class="info"><strong>Ink</strong><span>--ink</span><small>Fundos escuros, botões, texto principal.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#25134f"><b>#25134f</b></div><div class="info"><strong>Deep</strong><span>--deep</span><small>Telas de transição, theme-color, sombras.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#6f35e8"><b>#6f35e8</b></div><div class="info"><strong>Purple</strong><span>--purple</span><small>A cor "UPXP": destaque, links, eyebrows.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#c8ff3d"><b>#c8ff3d</b></div><div class="info"><strong>Lime</strong><span>--lime</span><small>Energia, sombras duras, indicador "ao vivo".</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#ed1c2e"><b>#ed1c2e</b></div><div class="info"><strong>Red</strong><span>--red</span><small>Institucional UNIPAR. Acento, nunca fundo em massa.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#f6f3ee"><b>#f6f3ee</b></div><div class="info"><strong>Paper</strong><span>--paper</span><small>Fundo claro quente da maioria das telas.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#716b7b"><b>#716b7b</b></div><div class="info"><strong>Muted</strong><span>--muted</span><small>Texto secundário e legendas.</small></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#ded8e6"><b>#ded8e6</b></div><div class="info"><strong>Line</strong><span>--line</span><small>Divisórias e bordas.</small></div></div>
+    </div>
+
+    <div class="usage">
+      <div class="combo" style="background:var(--ink);color:#fff">
+        <div class="tag">Combinação nº 1 · prioridade</div>
+        <strong>Ink + Lime</strong>
+        <p>Frente do jogo e materiais de TV/banner. Seriedade da tinta com a energia do lime. Texto branco sobre tinta; acentos em lime.</p>
+      </div>
+      <div class="combo" style="background:#fff;color:var(--ink);border:1px solid var(--line)">
+        <div class="tag">Combinação nº 2</div>
+        <strong style="color:var(--purple)">Paper + Purple</strong>
+        <p>Experiência do aluno e dashboard. Fundo claro quente, destaques roxos e botão tinta. Acesso direto da marca do jogo.</p>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule"><i>01</i><span>Use <b>lime sobre fundo escuro</b> ou como sombra dura/sotaque. Evite lime como texto sobre branco puro.</span></div>
+      <div class="rule"><i>02</i><span>O <b>vermelho #ed1c2e</b> pertence à UNIPAR: reserve para ações-chave (CTA na landing, ênfase de clímax) e assinatura institucional.</span></div>
+      <div class="rule"><i>03</i><span>Proporção de uso por tela: ~70% tinta/paper, ~20% roxo, ~8% lime, ~2% vermelho.</span></div>
+      <div class="rule"><i>04</i><span>Nunca aplique roxo sobre vermelho, nem lime sobre vermelho. Use sempre <b>altos contrastes</b> para texto.</span></div>
+    </div>
+
+    <div class="footer-note light"><span>02 — Paleta de cores</span><span>Missão UPXP 2026</span></div>
+  </section>
+
+  <!-- ============ 03 TIPOGRAFIA ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>03 — <em>Tipografia</em></h2></div><div class="num">03</div></div>
+    <p class="lead">Duas famílias, uma personalidade: <b>Archivo Black</b> para o grito visual do jogo e <b>Inter</b> para leitura e interface. Carregadas do Google Fonts.</p>
+
+    <div class="grid2">
+      <div class="type-spec">
+        <div class="label">Archivo Black · Display</div>
+        <div class="display">O campus<br />é o seu <em>jogo.</em></div>
+        <div style="margin-top:6mm;font-size:11px;color:var(--muted)">
+          Títulos grandes, números de ranking, letreiro. Letter-spacing -0.06em. Nunca alongar/esticar.
+        </div>
+      </div>
+      <div class="type-spec">
+        <div class="label">Inter · Texto e interface</div>
+        <div class="type-body" style="margin-top:4mm">
+          Encontre os códigos, responda aos desafios e avance no ranking.
+        </div>
+        <div style="margin-top:6mm;font-size:11px;color:var(--muted)">
+          Pesos 400 a 800, títulos curtos. Texto corrido em 400/500; rótulos, botões e "kickers" em 800 com espaçamento largo.
+        </div>
+      </div>
+    </div>
+
+    <div class="hierarchy">
+      <div class="h-row"><div class="spec">Archivo Black · clamp(48–102px) · -0.06em</div><div class="sample" style="font:44px/1 'Archivo Black';letter-spacing:-.05em">Título Herói</div></div>
+      <div class="h-row"><div class="spec">Archivo Black · 34–40px · -0.04em</div><div class="sample" style="font:30px/1 'Archivo Black';letter-spacing:-.03em">Título de <i>seção</i></div></div>
+      <div class="h-row"><div class="spec">Inter 800 · 14–18px · -0.01em</div><div class="sample" style="font-size:17px"><i>Subtítulo /</i> card</div></div>
+      <div class="h-row"><div class="spec">Inter 800 · 9–11px · 0.14–0.2em · MAIÚSCULO</div><div class="sample" style="font-size:10px;letter-spacing:.18em;color:var(--purple)">KICKER / EYEBROW</div></div>
+      <div class="h-row"><div class="spec">Inter 400–500 · 15px · 1.6</div><div class="sample" style="font-size:13px;color:var(--muted)">Parágrafo de apoio e legenda.</div></div>
+    </div>
+
+    <div class="footer-note light"><span>03 — Tipografia</span><span>Missão UPXP 2026</span></div>
+  </section>
+
+  <!-- ============ 04 TOM DE VOZ ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>04 — Tom de <em>voz</em></h2></div><div class="num">04</div></div>
+    <p class="lead">Curto, imperativo e motivacional. Palavras de jogo: desbloquear, pontuar, conquistar, subir, encontrar.</p>
+
+    <div class="voice">
+      <div class="card">
+        <strong>Gamificado, não infantilizado</strong>
+        <p>Trata o estudante como jogador: o campus é um tabuleiro, o código é a chave, a resposta é a conquista. Nunca faltar com respeito nem simplificar o conteúdo acadêmico.</p>
+      </div>
+      <div class="card">
+        <strong>Ações em MAIÚSCULAS</strong>
+        <p>"COMEÇAR →", "DESBLOQUEIE", "ENTENDI, VAMOS COMEÇAR →". Instruções claras em 1 frase. Microcopy confortável: "Leva menos de 1 minuto", "Sua sessão fica salva neste aparelho."</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:7mm">
+      <div class="label">Mensagens da campanha</div>
+      <div class="grid3">
+        <div><b style="font:18px/1.2 'Archivo Black';letter-spacing:-.02em">Campus é o seu jogo.</b><p style="font-size:10px;color:var(--muted);margin-top:2.5mm;line-height:1.5"">Slogan central, TV/banner/hero.</p></div>
+        <div><b style="font:18px/1.2 'Archivo Black';letter-spacing:-.02em">Encontre · Resolva · Conquiste.</b><p style="font-size:10px;color:var(--muted);margin-top:2.5mm;line-height:1.5">O arco do jogo em três verbos.</p></div>
+        <div><b style="font:18px/1.2 'Archivo Black';letter-spacing:-.02em">Ranking ao vivo.</b><p style="font-size:10px;color:var(--muted);margin-top:2.5mm;line-height:1.5">Promessa de competição e atualização em tempo real.</p></div>
+      </div>
+    </div>
+
+    <div class="wordlist">
+      <span class="word">ENCONTRE</span>
+      <span class="word">RESOLVA</span>
+      <span class="word">CONQUISTE</span>
+      <span class="word">PODIUM</span>
+      <span class="word alt">MISSÃO</span>
+      <span class="word alt">EXPLORADOR</span>
+      <span class="word">DESAFIO</span>
+      <span class="word alt">ESTAÇÃO</span>
+      <span class="word">+100 PTS</span>
+      <span class="word">AO VIVO</span>
+    </div>
+
+    <div class="footer-note light"><span>04 — Tom de voz</span><span>Missão UPXP 2026</span></div>
+  </section>
+
+  <!-- ============ 05 ELEMENTOS ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>05 — Elementos e <em>componentes</em></h2></div><div class="num">05</div></div>
+    <p class="lead">Assinaturas visuais reconhecíveis: sombras duras de lime, textura de grão sutil e o radar que anuncia o "ao vivo".</p>
+
+    <div class="el">
+      <div class="elem-card">
+        <div class="stage"><div class="shadow-demo">SOMBRA DURA<br />10px 10px 0 lime</div></div>
+        <div class="label">Sombras duras</div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:1.55">Cards, QR Code, botões e placas usam offset sólido de 8–12px em lime, sem blur. É a assinatura "tridimensional" da marca.</p>
+      </div>
+      <div class="elem-card">
+        <div class="stage">
+          <div class="qr-demo"><img src="https://quickchart.io/qr?text=https%3A%2F%2Fkauacaio.github.io%2FMissao-UPXP%2F&size=220&margin=1" alt="QR Missão UPXP" style="width:30mm" /><strong>APONTE A CÂMERA</strong></div>
+        </div>
+        <div class="label">QR Code</div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:1.55">Sempre sobre placa branca com sombra lime. Legenda em MAIÚSCULA: "APONTE A CÂMERA E ENTRE NO JOGO".</p>
+      </div>
+      <div class="elem-card">
+        <div class="stage dark"><div class="live-demo"><i></i> MISSÃO / RANKING AO VIVO</div></div>
+        <div class="label">Indicador ao vivo</div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:1.55">Placa tinta com ponto verde #45da76 pulsando. Reforça que o ranking atualiza em tempo real.</p>
+      </div>
+      <div class="elem-card">
+        <div class="stage"><div class="btn-demo">COMEÇAR <span>→</span></div></div>
+        <div class="label">Botão primário</div>
+        <p style="font-size:10.5px;color:var(--muted);line-height:1.55">App: tinta + seta lime. Landing/Capa: vermelho institucional com sombra lime. Sempre CAIXA ALTA + seta.</p>
+      </div>
+    </div>
+
+    <div class="footer-note light"><span>05 — Elementos</span><span>Missão UPXP 2026</span></div>
+  </section>
+
+  <!-- ============ 06 APLICAÇÕES ============ -->
+  <section class="page">
+    <div class="sec-head"><div><h2>06 — <em>Aplicações</em></h2></div><div class="num">06</div></div>
+    <p class="lead">Exemplos de aplicação real no jogo: desbloqueio de código, ranking e pódio.</p>
+
+    <div class="app-grid">
+      <div class="app-mock">
+        <div class="mock-bar"><i></i> DESBLOQUEIE O PRÓXIMO DESAFIO</div>
+        <div class="mock-body">
+          <div class="pts">ENCONTROU UM CÓDIGO? · +100 PONTOS</div>
+          <div class="code">Código: <b>ADM7K2</b></div>
+          <p style="font-size:10.5px;color:var(--muted);line-height:1.55">Códigos de 6 caracteres (letras e números), sempre em MAIÚSCULA. Prefixo temático (ex.: ADM = Administração) + sufixo aleatório.</p>
+        </div>
+      </div>
+      <div class="app-mock">
+        <div class="mock-bar"><i></i> RANKING AO VIVO</div>
+        <div class="mock-body">
+          <div class="podium-demo">
+            <div class="pod third">🥈<em>Matheus</em>1.000</div>
+            <div class="pod big">🥇<em>Maria</em>1.200</div>
+            <div class="pod mid">🥉<em>Kaic</em>400</div>
+          </div>
+          <div class="rank-row is-you"><b>01</b><span>Maria (você)</span><em>1.200</em></div>
+          <div class="rank-row"><b>02</b><span>Matheus</span><em>1.000</em></div>
+          <div class="rank-row"><b>03</b><span>Kaic</span><em>400</em></div>
+          <p style="font-size:10px;color:var(--muted);margin-top:4mm;line-height:1.5">O participante aparece com " (você)" e linha destacada em fundo roxo-claro.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note light"><span>06 — Aplicações</span><span>Missão UPXP 2026 · O campus é o seu jogo</span></div>
+  </section>
+
+</body>
+</html>
