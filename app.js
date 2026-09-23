@@ -178,6 +178,7 @@ function renderChallenge() {
 }
 
 function selectAnswer(index) {
+  if (state.answerBusy || state.challenge?.answered || !Number.isInteger(index) || !state.challenge?.options?.[index]) return;
   if (state.bonus && (state.bonusBusy || state.bonus.finished || performance.now() >= state.bonus.deadline)) return;
   state.selectedAnswer = index;
   document.querySelectorAll(".answer").forEach((button) => button.classList.toggle("selected", Number(button.dataset.index) === index));
@@ -186,21 +187,28 @@ function selectAnswer(index) {
 
 async function submitAnswer(index) {
   if (state.bonus) return submitBonusAnswer(index);
-  if (index === null || index === undefined) return;
+  if (!state.player || !state.challenge || state.challenge.answered || state.answerBusy || !Number.isInteger(index) || index < 0 || index >= state.challenge.options.length) return;
+  state.answerBusy = true;
   $("confirmAnswer").disabled = true; $("confirmAnswer").textContent = "ENVIANDO...";
-  document.querySelectorAll(".answer").forEach((b) => (b.disabled = true));
-  const { data, error } = await db.rpc("submit_answer", { player_uuid: state.player.id, challenge_uuid: state.challenge.challenge_id, selected_index: index });
-  if (error) { toast("Não foi possível registrar a resposta.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>"; return; }
-  const result = data?.[0];
-  if (!result) { toast("Não foi possível registrar a resposta. Tente novamente.", "error"); document.querySelectorAll(".answer").forEach((b) => (b.disabled = false)); $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>"; return; }
+  document.querySelectorAll(".answer").forEach(b => b.disabled = true);
+  try {
+    const { data, error } = await db.rpc("submit_answer", { player_uuid: state.player.id, challenge_uuid: state.challenge.challenge_id, selected_index: index });
+    const result = data?.[0];
+    if (error || !result) throw error || Error("Resposta vazia");
+    state.challenge.answered = result.is_correct;
   if (result.is_correct) state.player.score = (Number(state.player.score) || 0) + (Number(result.points_earned) || 0);
   const feedback = $("answerFeedback");
   document.querySelector(`.answer[data-index="${index}"]`)?.classList.add(result.is_correct ? "correct" : "wrong");
   feedback.className = `feedback ${result.is_correct ? "success" : "failure"}`;
-  feedback.innerHTML = `<strong>${result.is_correct ? `Acertou! +${result.points_earned} pontos` : "Não foi dessa vez!"}</strong><p>${escapeHtml(result.explanation || "Continue explorando o campus.")}</p><button class="primary-button" data-action="continue">CONTINUAR A MISSÃO →</button>`;
+  feedback.innerHTML = `<strong>${result.is_correct ? `Acertou! +${result.points_earned} pontos` : "Não foi dessa vez!"}</strong><p>${escapeHtml(result.explanation || "Continue explorando o campus.")}</p>${result.is_correct ? '' : '<button class="primary-button" data-action="retry-answer">TENTAR NOVAMENTE →</button>'}<button class="primary-button" data-action="continue">CONTINUAR A MISSÃO →</button>`;
   savePlayerLocally();
   updatePlayer();
-  await refreshPlayer();
+  } catch {
+    toast("Não foi possível confirmar a resposta. Confira a conexão e tente novamente.", "error");
+    document.querySelectorAll(".answer").forEach(b => b.disabled = false);
+    $("confirmAnswer").disabled = false; $("confirmAnswer").innerHTML = "CONFIRMAR RESPOSTA <span>→</span>";
+  } finally { state.answerBusy = false; }
+  if (state.challenge) await refreshPlayer();
 }
 
 async function loadRanking() {
@@ -333,6 +341,7 @@ function maybeShowEndMessage() {
 document.addEventListener("click", (event) => {
   const answer = event.target.closest(".answer"); if (answer) return selectAnswer(Number(answer.dataset.index));
   const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "retry-answer" && state.challenge && !state.challenge.answered && !state.answerBusy && !state.bonus) return renderChallenge();
   if (action === "bonus-next") return startBonusRound();
   if (action === "bonus-dismiss") $("bonusModal").close();
   if (action === "start") showScreen(state.player ? "gameScreen" : "registerScreen");
